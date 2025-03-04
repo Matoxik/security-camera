@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "562529374822",
+    "project_id": "securitycamera-4e96c",
+    "storage_bucket": "securitycamera-4e96c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:562529374822:android:c1604cc2c0f233561cd3a7",
+        "android_client_info": {
+          "package_name": "com.macieandrz.securitycamera"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAKP_E6V_EGDqNlj8X-dlx9q6EM85Rl7e8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
