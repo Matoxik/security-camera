@@ -1,4 +1,4 @@
-package com.macieandrz.securitycamera
+package com.macieandrz.securitycamera.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -55,7 +55,8 @@ class AuthViewModel : ViewModel() {
             }
 
             if (repeatPassword != password) {
-                _authState.value = AuthState.Error("Password and repeated password are not the same")
+                _authState.value =
+                    AuthState.Error("Password and repeated password are not the same")
                 return@launch
             }
 

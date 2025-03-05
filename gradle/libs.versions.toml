@@ -7,6 +7,7 @@ compiler = "4.14.2"
 concurrentFuturesKtx = "1.2.0"
 converterMoshi = "2.4.0"
 glideVersion = "4.14.2"
+guava = "32.1.3-android"
 kotlin = "2.0.20"
 coreKtx = "1.15.0"
 junit = "4.13.2"
@@ -49,6 +50,7 @@ converter-moshi = { module = "com.squareup.retrofit2:converter-moshi", version.r
 firebase-auth = { module = "com.google.firebase:firebase-auth" }
 firebase-firestore = { module = "com.google.firebase:firebase-firestore" }
 github-glide = { module = "com.github.bumptech.glide:glide", version.ref = "glideVersion" }
+guava = { module = "com.google.guava:guava", version.ref = "guava" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

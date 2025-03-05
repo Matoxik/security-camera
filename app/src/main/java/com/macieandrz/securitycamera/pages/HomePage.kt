@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -15,8 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.macieandrz.securitycamera.AuthState
-import com.macieandrz.securitycamera.AuthViewModel
+import com.macieandrz.securitycamera.viewModels.AuthState
+import com.macieandrz.securitycamera.viewModels.AuthViewModel
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -44,13 +45,40 @@ fun HomePage(modifier: Modifier = Modifier,
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        //Go to camera page
+        Button(
+            onClick = {
+           navController.navigate(CameraRoute)
+            }
+        ) {
+            Text(
+                text = "Turn on security camera",
+                fontSize = 16.sp
+            )
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Go to database page
+        Button(
+            onClick = {
+
+            }
+        ) {
+            Text(
+                text = "Sharing options",
+                fontSize = 16.sp
+            )
+        }
+        Spacer(modifier = Modifier.height(16.dp))
 
 
         TextButton(onClick = {
         authViewModel.signout()
     }) {
         Text(text = "Sign out")
-    } }
+    }
+
+    }
 
 
 
