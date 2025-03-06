@@ -1,5 +1,7 @@
 package com.macieandrz.securitycamera.viewModels
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
@@ -10,9 +12,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
-class AuthViewModel : ViewModel() {
+class AuthViewModel(app: Application) : AndroidViewModel(app) {
 
-    private val repo = FirebaseRepository()
+    private val repo = FirebaseRepository(app.applicationContext)
 
     private val auth: FirebaseAuth = repo.getAuth()
 
