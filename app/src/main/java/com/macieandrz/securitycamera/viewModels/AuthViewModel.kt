@@ -3,6 +3,8 @@ package com.macieandrz.securitycamera.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
+import com.macieandrz.securitycamera.data.models.User
+import com.macieandrz.securitycamera.repository.FirebaseRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -10,14 +12,19 @@ import kotlinx.coroutines.tasks.await
 
 class AuthViewModel : ViewModel() {
 
-    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+    private val repo = FirebaseRepository()
+
+    private val auth: FirebaseAuth = repo.getAuth()
 
     private val _authState = MutableStateFlow<AuthState>(AuthState.UnAuthenticated)
     val authState: StateFlow<AuthState> = _authState
 
+
+
     init {
         checkAuthStatus()
     }
+
 
 
     fun checkAuthStatus() {
@@ -28,6 +35,7 @@ class AuthViewModel : ViewModel() {
                 AuthState.Authenticated
             }
         }
+
     }
 
     fun login(email: String, password: String) {
@@ -62,10 +70,37 @@ class AuthViewModel : ViewModel() {
 
             _authState.value = AuthState.Loading
             try {
-                auth.createUserWithEmailAndPassword(email, password).await()
+                val authResult = auth.createUserWithEmailAndPassword(email, password).await()
+                //Create new user and add to Firebase Firestore
+               if (authResult.user != null) {
+                   val user = User(
+                       uid = authResult.user!!.uid,
+                       email = authResult.user!!.email,
+                       images = emptyList()
+                   )
+                   repo.createNewUser(user)
+               }
+
                 _authState.value = AuthState.Authenticated
             } catch (e: Exception) {
                 _authState.value = AuthState.Error(e.message ?: "Signup error")
+            }
+        }
+    }
+
+    fun resetPassword(email: String) {
+        viewModelScope.launch {
+            if (email.isEmpty() ) {
+                _authState.value = AuthState.Error("Email can't be empty")
+                return@launch
+            }
+
+            _authState.value = AuthState.Loading
+            try {
+                auth.sendPasswordResetEmail(email).await()
+                _authState.value = AuthState.PasswordReseted
+            } catch (e: Exception) {
+                _authState.value = AuthState.Error(e.message ?: "Reset password error")
             }
         }
     }
@@ -81,6 +116,7 @@ class AuthViewModel : ViewModel() {
 sealed class AuthState {
     object Authenticated : AuthState() // User is logged in
     object UnAuthenticated : AuthState() // User is not logged in
+    object PasswordReseted: AuthState()
     object Loading : AuthState() // Authentication process is ongoing
     data class Error(val message: String) : AuthState()
 }
