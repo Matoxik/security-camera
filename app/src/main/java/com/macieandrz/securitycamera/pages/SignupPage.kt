@@ -31,6 +31,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.macieandrz.securitycamera.data.models.User
 import com.macieandrz.securitycamera.viewModels.AuthState
 import com.macieandrz.securitycamera.viewModels.AuthViewModel
 import kotlinx.serialization.Serializable

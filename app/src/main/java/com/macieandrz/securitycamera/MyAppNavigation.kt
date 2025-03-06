@@ -11,6 +11,8 @@ import com.macieandrz.securitycamera.pages.HomePage
 import com.macieandrz.securitycamera.pages.HomeRoute
 import com.macieandrz.securitycamera.pages.LoginPage
 import com.macieandrz.securitycamera.pages.LoginRoute
+import com.macieandrz.securitycamera.pages.ResetPassPage
+import com.macieandrz.securitycamera.pages.ResetPassRoute
 import com.macieandrz.securitycamera.pages.SignupPage
 import com.macieandrz.securitycamera.pages.SignupRoute
 import com.macieandrz.securitycamera.viewModels.AuthViewModel
@@ -32,8 +34,12 @@ fun MyAppNavigation(modifier: Modifier = Modifier, authViewModel: AuthViewModel,
         composable<HomeRoute> {
             HomePage(modifier, navController, authViewModel)
         }
+        composable<ResetPassRoute> {
+            ResetPassPage(modifier, navController, authViewModel)
+        }
         composable<CameraRoute> {
             CameraPage(modifier, navController, cameraViewModel)
         }
+
     }
 }

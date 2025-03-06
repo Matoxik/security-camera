@@ -65,7 +65,7 @@ fun HomePage(modifier: Modifier = Modifier,
             }
         ) {
             Text(
-                text = "Sharing options",
+                text = "Gallery",
                 fontSize = 16.sp
             )
         }

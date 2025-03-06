@@ -48,6 +48,7 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth) // Authentication
     implementation(libs.firebase.firestore) // Cloud
+    implementation(libs.firebase.storage)
 
     // ML kit pose detection
     implementation (libs.pose.detection)
