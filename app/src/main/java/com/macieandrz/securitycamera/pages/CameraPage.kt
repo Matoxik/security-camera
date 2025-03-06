@@ -1,21 +1,11 @@
 package com.macieandrz.securitycamera.pages
 
 import android.Manifest
-import android.util.Log
-import androidx.annotation.OptIn
-import androidx.camera.core.CameraSelector
-import androidx.camera.core.ExperimentalGetImage
-import androidx.camera.core.ImageAnalysis
-import androidx.camera.core.Preview
-import androidx.camera.core.UseCaseGroup
-import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
-import androidx.compose.animation.with
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,7 +24,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -50,26 +39,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.concurrent.futures.await
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
-import com.google.android.gms.tasks.Tasks
-import com.google.mlkit.vision.common.InputImage
-import com.google.mlkit.vision.pose.Pose
-import com.google.mlkit.vision.pose.PoseDetector
-import com.macieandrz.securitycamera.viewModels.AuthViewModel
 import com.macieandrz.securitycamera.viewModels.CameraViewModel
 import kotlinx.coroutines.delay
 import kotlinx.serialization.Serializable
-import java.util.concurrent.Executor
-import java.util.concurrent.TimeUnit
 
 @Serializable
 object CameraRoute
 
-@kotlin.OptIn(ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun CameraPage(
     modifier: Modifier = Modifier,
@@ -77,11 +58,11 @@ fun CameraPage(
     cameraViewModel: CameraViewModel
 ) {
     val cameraPermissionsState = rememberMultiplePermissionsState(
-        permissions = listOf(Manifest.permission.CAMERA)
+        permissions = listOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
     )
     var isCountdownFinished by remember { mutableStateOf(false) }
 
-    Home(modifier = modifier, navController)
+
 
     Column(
         modifier = modifier.fillMaxSize(),
@@ -98,7 +79,7 @@ fun CameraPage(
             }
         }
 
-        if (!isCountdownFinished) {
+        if (!isCountdownFinished && cameraPermissionsState.allPermissionsGranted) {
             AnimatedCounter(
                 startValue = 10, // In seconds
                 style = MaterialTheme.typography.displayLarge,
@@ -152,9 +133,10 @@ fun CameraPage(
                 }
             }
 
-            Home(modifier = modifier, navController)
+
         }
     }
+    Home(modifier = modifier, navController)
 }
 
 @Composable
