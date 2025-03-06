@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import android.os.Environment
 import android.util.Log
+import android.widget.Toast
 import androidx.work.CoroutineWorker
 import androidx.work.Worker
 import androidx.work.WorkerParameters
@@ -39,6 +40,7 @@ class SendImageToServerWorker(context: Context, params: WorkerParameters) : Work
                             userRef.update("images", updatedImages)
                         }
                     }
+
                 }.addOnFailureListener {
                     success = false
                 }

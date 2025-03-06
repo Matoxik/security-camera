@@ -60,9 +60,10 @@ dependencies {
     implementation(libs.androidx.camera.view)
     implementation (libs.guava)
 
-    // Glide for image loading
-    implementation (libs.github.glide)
-    implementation(libs.androidx.runtime.livedata)
+    // Coil for image loading
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
+
     implementation(libs.androidx.espresso.core)
     implementation(libs.androidx.constraintlayout.compose.android)
     annotationProcessor (libs.compiler)

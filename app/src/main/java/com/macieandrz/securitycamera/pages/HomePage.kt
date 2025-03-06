@@ -58,10 +58,10 @@ fun HomePage(modifier: Modifier = Modifier,
         }
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Go to database page
+        // Go to gallery page
         Button(
             onClick = {
-
+                navController.navigate(GalleryRoute)
             }
         ) {
             Text(

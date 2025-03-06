@@ -26,13 +26,13 @@ import com.macieandrz.securitycamera.ui.theme.SecurityCameraTheme
 import com.macieandrz.securitycamera.viewModels.AuthViewModel
 import com.macieandrz.securitycamera.pages.*
 import com.macieandrz.securitycamera.viewModels.CameraViewModel
-
+import com.macieandrz.securitycamera.viewModels.GalleryViewModel
 
 
 class MainActivity : ComponentActivity() {
    private val authViewModel by viewModels<AuthViewModel>()
     private val cameraViewModel by viewModels<CameraViewModel>()
-
+    private val galleryViewModel by viewModels<GalleryViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +48,8 @@ class MainActivity : ComponentActivity() {
                     MyAppNavigation(
                         modifier = Modifier.padding(innerPadding),
                         authViewModel = authViewModel,
-                        cameraViewModel = cameraViewModel
+                        cameraViewModel = cameraViewModel,
+                        galleryViewModel = galleryViewModel
                     )
                 }
                 }
