@@ -94,7 +94,7 @@ fun GalleryPage(
         }
     }
 
-    // Animacja przejścia
+    // Transition animation
     val transition = updateTransition(targetState = isExpanded, label = "ImageTransition")
     val scale by transition.animateFloat(
         transitionSpec = { tween(durationMillis = 300) },
@@ -109,7 +109,7 @@ fun GalleryPage(
         if (expanded) 1f else 0f
     }
 
-    // Widok powiększonego zdjęcia
+    // Enlarged photo view
     if (selectedImageUrl != null) {
         Box(
             modifier = Modifier

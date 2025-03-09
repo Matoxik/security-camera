@@ -28,7 +28,6 @@ class AuthViewModel(app: Application) : AndroidViewModel(app) {
     }
 
 
-
     fun checkAuthStatus() {
         viewModelScope.launch {
             _authState.value = if (auth.currentUser == null) {
@@ -111,6 +110,7 @@ class AuthViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             auth.signOut()
             _authState.value = AuthState.UnAuthenticated
+
         }
     }
 }

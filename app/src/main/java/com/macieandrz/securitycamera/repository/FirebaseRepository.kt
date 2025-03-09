@@ -18,15 +18,14 @@ import com.macieandrz.securitycamera.data.workers.SendImageToServerWorker
 
 class FirebaseRepository(context: Context) {
 
-    private val auth = FirebaseAuth.getInstance()
+    private var auth = FirebaseAuth.getInstance()
     private val fireStore = FirebaseFirestore.getInstance()
     private val storage = FirebaseStorage.getInstance()
-    private val userId = auth.currentUser?.uid
 
-
+    fun getCurrentUserId() = auth.currentUser?.uid
     fun getAuth() : FirebaseAuth = auth
     fun getStorage() = storage
-    fun getCurrentUserId() = userId
+
 
     fun createNewUser(user: User) {
         fireStore.collection("users")
