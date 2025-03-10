@@ -30,15 +30,10 @@ class SendImageToServerWorker(context: Context, params: WorkerParameters) : Work
                 val uploadTask = imageRef.putFile(Uri.fromFile(file))
 
                 uploadTask.addOnSuccessListener {
+
                     imageRef.downloadUrl.addOnSuccessListener { uri ->
                         val imageUrl = uri.toString()
-                        val userRef = FirebaseFirestore.getInstance().collection("users").document(userId)
-                        userRef.get().addOnSuccessListener { document ->
-                            val user = document.toObject(User::class.java)
-                            val updatedImages = user?.images?.toMutableList() ?: mutableListOf()
-                            updatedImages.add(imageUrl)
-                            userRef.update("images", updatedImages)
-                        }
+                        repository.addImageToUserWithLimit(imageUrl)
                     }
 
                 }.addOnFailureListener {

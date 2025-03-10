@@ -2,6 +2,7 @@ package com.macieandrz.securitycamera.repository
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import androidx.work.Constraints
 import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
@@ -57,6 +58,45 @@ class FirebaseRepository(context: Context) {
         ).then(secondTask)
             .enqueue()
     }
+
+    fun addImageToUserWithLimit(imageUrl: String) {
+        val userId = getCurrentUserId() ?: return
+        val userRef = fireStore.collection("users").document(userId)
+
+        userRef.get().addOnSuccessListener { document ->
+            val user = document.toObject(User::class.java) ?: return@addOnSuccessListener
+
+            // Get the current list of images or create a new one if it's empty
+            val updatedImages = user.images?.toMutableList() ?: mutableListOf()
+            updatedImages.add(imageUrl)
+
+            // If the limit of 10 images is exceeded, remove the oldest one
+            var oldestImageUrl: String? = null
+            if (updatedImages.size > 10) {
+                oldestImageUrl = updatedImages.removeAt(0)
+            }
+
+            // Update the user document with the new list of images
+            userRef.update("images", updatedImages).addOnSuccessListener {
+                // If an image was removed, delete it from Firebase Storage as well
+                if (oldestImageUrl != null) {
+                    try {
+                        storage.getReferenceFromUrl(oldestImageUrl).delete()
+                            .addOnSuccessListener {
+                                Log.d("DEBUG", "Successfully deleted oldest photo")
+                            }
+                            .addOnFailureListener { e ->
+                                Log.e("DEBUG", "Error deleting photo: ${e.message}")
+                            }
+                    } catch (e: Exception) {
+                        Log.e("DEBUG", "Error getting references: ${e.message}")
+                    }
+                }
+            }
+        }
+    }
+
+
 
 
 }
