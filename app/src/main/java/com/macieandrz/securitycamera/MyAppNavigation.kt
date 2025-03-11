@@ -13,6 +13,8 @@ import com.macieandrz.securitycamera.pages.HomePage
 import com.macieandrz.securitycamera.pages.HomeRoute
 import com.macieandrz.securitycamera.pages.LoginPage
 import com.macieandrz.securitycamera.pages.LoginRoute
+import com.macieandrz.securitycamera.pages.NotificationPage
+import com.macieandrz.securitycamera.pages.NotificationRoute
 import com.macieandrz.securitycamera.pages.ResetPassPage
 import com.macieandrz.securitycamera.pages.ResetPassRoute
 import com.macieandrz.securitycamera.pages.SignupPage
@@ -20,13 +22,15 @@ import com.macieandrz.securitycamera.pages.SignupRoute
 import com.macieandrz.securitycamera.viewModels.AuthViewModel
 import com.macieandrz.securitycamera.viewModels.CameraViewModel
 import com.macieandrz.securitycamera.viewModels.GalleryViewModel
+import com.macieandrz.securitycamera.viewModels.NotificationViewModel
 
 @Composable
 fun MyAppNavigation(
     modifier: Modifier = Modifier,
     authViewModel: AuthViewModel,
     cameraViewModel: CameraViewModel,
-    galleryViewModel: GalleryViewModel
+    galleryViewModel: GalleryViewModel,
+    notificationViewModel: NotificationViewModel
     ) {
     val navController = rememberNavController()
 
@@ -51,6 +55,10 @@ fun MyAppNavigation(
         composable<GalleryRoute> {
             GalleryPage(modifier, navController, galleryViewModel)
         }
+        composable<NotificationRoute> {
+            NotificationPage(modifier, navController, notificationViewModel)
+        }
+
 
     }
 }

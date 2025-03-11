@@ -9,6 +9,7 @@ import androidx.camera.view.PreviewView
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import android.content.Context
+import android.icu.text.SimpleDateFormat
 import android.os.Environment
 import android.util.Log
 import androidx.annotation.OptIn
@@ -32,11 +33,16 @@ import kotlinx.coroutines.Dispatchers
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.util.Date
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 class CameraViewModel(app: Application) : AndroidViewModel(app) {
 
+
     private val repo = FirebaseRepository(app.applicationContext)
+
+    private val notificationViewModel = NotificationViewModel(app)
 
     // Executors
     private val cameraExecutor: Executor = Executors.newSingleThreadExecutor()
@@ -144,6 +150,21 @@ class CameraViewModel(app: Application) : AndroidViewModel(app) {
             object : ImageCapture.OnImageSavedCallback {
                 override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
                     Log.d("DEBUG", "Photo saved: ${photoFile.absolutePath}")
+
+                    // Send notification after saving photo
+                    val recipientEmail = notificationViewModel.getRecipientEmail()
+                    if (recipientEmail.isNotEmpty()) {
+                        val timestamp = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+                            .format(Date())
+
+                        repo.sendNotificationViaFirestore(
+                            recipientEmail,
+                            "Wykryto człowieka",
+                            "Wykryto osobę na posesji i wykonano zdjęcie o $timestamp",
+                            viewModelScope
+                        )
+                    }
+
                     onPhotoSaved()
                 }
 

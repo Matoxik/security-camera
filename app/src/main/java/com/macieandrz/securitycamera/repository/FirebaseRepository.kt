@@ -10,11 +10,18 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.macieandrz.securitycamera.data.models.User
 import com.macieandrz.securitycamera.data.workers.ClearCacheWorker
 import com.macieandrz.securitycamera.data.workers.SendImageToServerWorker
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.tasks.await
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 
 class FirebaseRepository(context: Context) {
@@ -59,6 +66,7 @@ class FirebaseRepository(context: Context) {
             .enqueue()
     }
 
+    // Gallery
     fun addImageToUserWithLimit(imageUrl: String) {
         val userId = getCurrentUserId() ?: return
         val userRef = fireStore.collection("users").document(userId)
@@ -93,6 +101,59 @@ class FirebaseRepository(context: Context) {
                     }
                 }
             }
+        }
+    }
+
+   // Notifications
+   fun sendNotificationViaFirestore(recipientEmail: String, title: String, message: String, coroutineScope: CoroutineScope) {
+       coroutineScope.launch(Dispatchers.IO) {
+           try {
+               // Get FCM token for the email address
+               val token = getTokenForEmail(recipientEmail)
+
+               if (token.isNotEmpty()) {
+                   // Create a notification document
+                   val notification = hashMapOf(
+                       "token" to token,
+                       "title" to title,
+                       "message" to message,
+                       "timestamp" to FieldValue.serverTimestamp(),
+                       "sent" to false
+                   )
+
+                   fireStore.collection("notifications")
+                       .add(notification)
+                       .addOnSuccessListener { documentReference ->
+                           Log.d("DEBUG", "Notification document added with ID: ${documentReference.id}")
+                       }
+                       .addOnFailureListener { e ->
+                           Log.e("DEBUG", "Error adding notification document: ${e.message}")
+                       }
+               } else {
+                   Log.e("DEBUG", "No FCM token found for email address: $recipientEmail")
+               }
+           } catch (e: Exception) {
+               Log.e("DEBUG", "Error sending notification: ${e.message}")
+           }
+       }
+   }
+
+    private suspend fun getTokenForEmail(email: String): String {
+        return try {
+            val querySnapshot = fireStore.collection("users")
+                .whereEqualTo("email", email)
+                .get()
+                .await()
+
+            if (!querySnapshot.isEmpty) {
+                val document = querySnapshot.documents.first()
+                return document.getString("fcmToken") ?: ""
+            }
+
+            return ""
+        } catch (e: Exception) {
+            Log.e("DEBUG", "Error retrieving token for email address: ${e.message}")
+            return ""
         }
     }
 

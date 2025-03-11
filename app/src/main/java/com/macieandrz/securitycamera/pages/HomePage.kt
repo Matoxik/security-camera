@@ -71,6 +71,19 @@ fun HomePage(modifier: Modifier = Modifier,
         }
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Go to notification page
+        Button(
+            onClick = {
+                navController.navigate(NotificationRoute)
+            }
+        ) {
+            Text(
+                text = "Notifications Settings",
+                fontSize = 16.sp
+            )
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+
 
         TextButton(onClick = {
         authViewModel.signout()

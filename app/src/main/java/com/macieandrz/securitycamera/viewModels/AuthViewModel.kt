@@ -4,7 +4,9 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.messaging.messaging
 import com.macieandrz.securitycamera.data.models.User
 import com.macieandrz.securitycamera.repository.FirebaseRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -74,10 +76,14 @@ class AuthViewModel(app: Application) : AndroidViewModel(app) {
                 val authResult = auth.createUserWithEmailAndPassword(email, password).await()
                 //Create new user and add to Firebase Firestore
                if (authResult.user != null) {
+                   val fcmToken = Firebase.messaging.token.await()
+
                    val user = User(
                        uid = authResult.user!!.uid,
                        email = authResult.user!!.email,
-                       images = emptyList()
+                       images = emptyList(),
+                       fcmToken = fcmToken,
+                       friendsEmail = emptyList()
                    )
                    repo.createNewUser(user)
                }
