@@ -33,14 +33,21 @@ class FirebaseRepository(context: Context) {
     fun getCurrentUserId() = auth.currentUser?.uid
     fun getAuth() : FirebaseAuth = auth
     fun getStorage() = storage
-
+    fun getFirestore() = fireStore
 
     fun createNewUser(user: User) {
         fireStore.collection("users")
     .document(user.uid!!)
     .set(user)
-
     }
+
+    suspend fun updateUserFriendList(user: User) {
+
+        fireStore.collection("users")
+            .document(getCurrentUserId()!!)
+            .update("friendsEmail", user.friendsEmail).await()
+    }
+
 
     // Workers
     private val workManager = WorkManager.getInstance(context)
@@ -105,38 +112,41 @@ class FirebaseRepository(context: Context) {
     }
 
    // Notifications
-   fun sendNotificationViaFirestore(recipientEmail: String, title: String, message: String, coroutineScope: CoroutineScope) {
+   fun sendNotificationsViaFirestore(friendsEmail: List<String>, title: String, message: String, coroutineScope: CoroutineScope) {
        coroutineScope.launch(Dispatchers.IO) {
-           try {
-               // Get FCM token for the email address
-               val token = getTokenForEmail(recipientEmail)
 
-               if (token.isNotEmpty()) {
-                   // Create a notification document
-                   val notification = hashMapOf(
-                       "token" to token,
-                       "title" to title,
-                       "message" to message,
-                       "timestamp" to FieldValue.serverTimestamp(),
-                       "sent" to false
-                   )
+           friendsEmail.forEach { email ->
+               try {
+                   // Get FCM token for the email address
+                   val token = getTokenForEmail(email)
+                   if (token.isNotEmpty()) {
+                       // Create a notification document
+                       val notification = hashMapOf(
+                           "token" to token,
+                           "title" to title,
+                           "message" to message,
+                           "timestamp" to FieldValue.serverTimestamp(),
+                           "sent" to false
+                       )
 
-                   fireStore.collection("notifications")
-                       .add(notification)
-                       .addOnSuccessListener { documentReference ->
-                           Log.d("DEBUG", "Notification document added with ID: ${documentReference.id}")
-                       }
-                       .addOnFailureListener { e ->
-                           Log.e("DEBUG", "Error adding notification document: ${e.message}")
-                       }
-               } else {
-                   Log.e("DEBUG", "No FCM token found for email address: $recipientEmail")
+                       fireStore.collection("notifications")
+                           .add(notification)
+                           .addOnSuccessListener { documentReference ->
+                               Log.d("DEBUG", "Notification document added with ID: ${documentReference.id}")
+                           }
+                           .addOnFailureListener { e ->
+                               Log.e("DEBUG", "Error adding notification document: ${e.message}")
+                           }
+                   } else {
+                       Log.e("DEBUG", "No FCM token found for email address: $email")
+                   }
+               } catch (e: Exception) {
+                   Log.e("DEBUG", "Error sending notification to $email: ${e.message}")
                }
-           } catch (e: Exception) {
-               Log.e("DEBUG", "Error sending notification: ${e.message}")
            }
        }
    }
+
 
     private suspend fun getTokenForEmail(email: String): String {
         return try {

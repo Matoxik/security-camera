@@ -28,8 +28,10 @@ import com.google.mlkit.vision.pose.PoseDetector
 import androidx.lifecycle.LifecycleOwner
 import com.google.android.gms.tasks.Tasks
 import com.google.mlkit.vision.common.InputImage
+import com.macieandrz.securitycamera.data.models.User
 import com.macieandrz.securitycamera.repository.FirebaseRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.tasks.await
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -41,8 +43,6 @@ class CameraViewModel(app: Application) : AndroidViewModel(app) {
 
 
     private val repo = FirebaseRepository(app.applicationContext)
-
-    private val notificationViewModel = NotificationViewModel(app)
 
     // Executors
     private val cameraExecutor: Executor = Executors.newSingleThreadExecutor()
@@ -151,21 +151,36 @@ class CameraViewModel(app: Application) : AndroidViewModel(app) {
                 override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
                     Log.d("DEBUG", "Photo saved: ${photoFile.absolutePath}")
 
-                    // Send notification after saving photo
-                    val recipientEmail = notificationViewModel.getRecipientEmail()
-                    if (recipientEmail.isNotEmpty()) {
-                        val timestamp = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-                            .format(Date())
+                    // Get current friend list from firestore
+                    viewModelScope.launch {
+                        try {
+                            val currentUserId = repo.getCurrentUserId() ?: return@launch
+                            val userDoc = repo.getFirestore()
+                                .collection("users")
+                                .document(currentUserId)
+                                .get()
+                                .await()
+                            val user = userDoc.toObject(User::class.java)
+                            val friendsEmails = user?.friendsEmail ?: emptyList()
 
-                        repo.sendNotificationViaFirestore(
-                            recipientEmail,
-                            "Wykryto człowieka",
-                            "Wykryto osobę na posesji i wykonano zdjęcie o $timestamp",
-                            viewModelScope
-                        )
+                            if (friendsEmails.isNotEmpty()) {
+                                val timestamp = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+                                    .format(Date())
+
+                                repo.sendNotificationsViaFirestore(
+                                    friendsEmails,
+                                    "Wykryto człowieka",
+                                    "Wykryto osobę na posesji i wykonano zdjęcie o $timestamp",
+                                    viewModelScope
+                                )
+                            }
+
+                            onPhotoSaved()
+                        } catch (e: Exception) {
+                            Log.e("DEBUG", "Error fetching friends: ${e.message}")
+                            onPhotoSaved()
+                        }
                     }
-
-                    onPhotoSaved()
                 }
 
                 override fun onError(exception: ImageCaptureException) {
@@ -174,6 +189,7 @@ class CameraViewModel(app: Application) : AndroidViewModel(app) {
             }
         )
     }
+
 
     override fun onCleared() {
         super.onCleared()
