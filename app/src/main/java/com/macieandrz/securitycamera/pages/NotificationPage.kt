@@ -9,6 +9,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -67,6 +68,7 @@ fun NotificationPage(
             Column {
                 Button(
                     onClick = { notificationPermissionsState.launchMultiplePermissionRequest() },
+                    shape = CutCornerShape(8.dp)
                 ) {
                     Text(text = "Ask for permissions")
                 }
@@ -77,10 +79,11 @@ fun NotificationPage(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Ustawienia powiadomień",
+                    text = "Notification settings",
                     style = MaterialTheme.typography.headlineMedium,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
@@ -93,29 +96,30 @@ fun NotificationPage(
                     OutlinedTextField(
                         value = newEmail,
                         onValueChange = { newEmail = it },
-                        label = { Text("Adres email przyjaciela") },
+                        label = { Text("Send notification to") },
                         modifier = Modifier.weight(1f),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                        placeholder = { Text("Wprowadź adres email") }
+                        placeholder = { Text("Enter email address") }
                     )
 
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(12.dp))
 
                     Button(
+                        shape = CutCornerShape(8.dp),
                         onClick = {
                             if (Patterns.EMAIL_ADDRESS.matcher(newEmail).matches()) {
                                 notificationViewModel.addFriendEmail(FriendEmail(newEmail))
                                 newEmail = "" // Clearing the field
-                                Toast.makeText(context, "Email dodany", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, "Email added correctly", Toast.LENGTH_SHORT).show()
                             } else {
-                                Toast.makeText(context, "Nieprawidłowy adres email", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, "Invalid email address", Toast.LENGTH_SHORT).show()
                             }
                         }
-                    ) {
-                        Text("Dodaj")
+                    ){
+                        Text("Add")
                     }
                 }
-
+                Spacer(modifier = Modifier.width(12.dp))
                 // List of friend emails
                 FriendEmailList(
                     emails = friendEmails,
@@ -136,7 +140,7 @@ fun FriendEmailList(
     Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
         if (emails.isEmpty()) {
             Text(
-                text = "Lista jest pusta",
+                text = "List is empty",
                 modifier = Modifier.padding(top = 32.dp),
                 style = MaterialTheme.typography.bodyLarge
             )
@@ -185,7 +189,7 @@ fun FriendEmailRow(
             ) {
                 Icon(
                     imageVector = Icons.Default.Delete,
-                    contentDescription = "Usuń",
+                    contentDescription = "Delete",
                     tint = Color.White,
                     modifier = Modifier.padding(end = 16.dp)
                 )

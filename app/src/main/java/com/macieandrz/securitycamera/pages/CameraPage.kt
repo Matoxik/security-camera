@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.Button
@@ -72,6 +73,7 @@ fun CameraPage(
         if (!cameraPermissionsState.allPermissionsGranted) {
             Column {
                 Button(
+                    shape = CutCornerShape(8.dp),
                     onClick = { cameraPermissionsState.launchMultiplePermissionRequest() },
                 ) {
                     Text(text = "Ask for permissions")

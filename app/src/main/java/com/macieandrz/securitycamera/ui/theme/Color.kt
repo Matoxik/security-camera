@@ -18,7 +18,7 @@ val LightYellow = Color(0xFFFFF9E5)
 val MediumYellow = Color(0xFFFFF3CC)
 val MediumGrey = Color(0xFF4C4C4C)
 val DarkBlue = Color(0xFF3D5F90)
-val DarkGrey = Color(0xFF141218)
+val DarkGrey = Color(0xFF474747)
 
 val Orange80 = Color(0xFFFFB74D)
 val OrangeGrey80 = Color(0xFFB97A57)
