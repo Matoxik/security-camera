@@ -32,3 +32,22 @@ val Amber = Color(0xFFFFD54F)
 val DarkerOrange = Color(0xFFBF360C)
 val WarmYellow = Color(0xFFFFF3E0)
 val Golden = Color(0xFFFFE57F)
+
+// Icons
+val homeBackground = Color(0xFFFFEBEE)
+val homeTint = Color(0xFFFF6B6B)
+
+val cameraBackground = Color(0xFFEDE7F6)
+val cameraTint = Color(0xFF9575CD)
+
+val galleryBackground = Color(0xFFE1F5FE)
+val galleryTint = Color(0xFF4FC3F7)
+
+val crimeStatBackground = Color(0xFFE8F5E9)
+val crimeStatTint = Color(0xFF66BB6A)
+
+val notificationBackground = Color(0xFFFFF3E0)
+val notificationTint = Color(0xFFFFC107)
+
+val logoutBackground = Color(0xFFFFEBEE)
+val logoutTint = Color(0xFFFF6B6B)

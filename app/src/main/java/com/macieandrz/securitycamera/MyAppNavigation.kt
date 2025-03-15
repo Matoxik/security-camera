@@ -7,6 +7,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.macieandrz.securitycamera.pages.CameraPage
 import com.macieandrz.securitycamera.pages.CameraRoute
+import com.macieandrz.securitycamera.pages.CrimeStatPage
+import com.macieandrz.securitycamera.pages.CrimeStatRoute
 import com.macieandrz.securitycamera.pages.GalleryPage
 import com.macieandrz.securitycamera.pages.GalleryRoute
 import com.macieandrz.securitycamera.pages.HomePage
@@ -21,6 +23,7 @@ import com.macieandrz.securitycamera.pages.SignupPage
 import com.macieandrz.securitycamera.pages.SignupRoute
 import com.macieandrz.securitycamera.viewModels.AuthViewModel
 import com.macieandrz.securitycamera.viewModels.CameraViewModel
+import com.macieandrz.securitycamera.viewModels.CrimeStatViewModel
 import com.macieandrz.securitycamera.viewModels.GalleryViewModel
 import com.macieandrz.securitycamera.viewModels.NotificationViewModel
 
@@ -30,7 +33,8 @@ fun MyAppNavigation(
     authViewModel: AuthViewModel,
     cameraViewModel: CameraViewModel,
     galleryViewModel: GalleryViewModel,
-    notificationViewModel: NotificationViewModel
+    notificationViewModel: NotificationViewModel,
+    crimeStatViewModel: CrimeStatViewModel
     ) {
     val navController = rememberNavController()
 
@@ -57,6 +61,9 @@ fun MyAppNavigation(
         }
         composable<NotificationRoute> {
             NotificationPage(modifier, navController, notificationViewModel)
+        }
+        composable<CrimeStatRoute> {
+            CrimeStatPage(modifier, navController, crimeStatViewModel)
         }
 
 

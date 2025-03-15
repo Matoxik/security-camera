@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import com.macieandrz.securitycamera.ui.element.BottomNavigationBar
 import com.macieandrz.securitycamera.viewModels.NotificationViewModel
 import kotlinx.serialization.Serializable
 
@@ -38,7 +39,7 @@ data class FriendEmail(
     val uid: String = email // We use email as a unique identifier
 )
 
-@OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun NotificationPage(
     modifier: Modifier = Modifier,
@@ -58,8 +59,19 @@ fun NotificationPage(
         permissions = listOf(Manifest.permission.POST_NOTIFICATIONS, Manifest.permission.INTERNET)
     )
 
+    Scaffold(
+        modifier = modifier,
+        bottomBar = {
+            BottomNavigationBar(
+                navController = navController,
+                actualPosition = "NotificationPage"
+            )
+        }
+    ) { paddingValues ->
     Column(
-        modifier = modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -130,6 +142,7 @@ fun NotificationPage(
             }
         }
     }
+}
 }
 
 @Composable

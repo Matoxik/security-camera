@@ -26,15 +26,17 @@ import com.macieandrz.securitycamera.ui.theme.SecurityCameraTheme
 import com.macieandrz.securitycamera.viewModels.AuthViewModel
 import com.macieandrz.securitycamera.pages.*
 import com.macieandrz.securitycamera.viewModels.CameraViewModel
+import com.macieandrz.securitycamera.viewModels.CrimeStatViewModel
 import com.macieandrz.securitycamera.viewModels.GalleryViewModel
 import com.macieandrz.securitycamera.viewModels.NotificationViewModel
 
 
 class MainActivity : ComponentActivity() {
-   private val authViewModel by viewModels<AuthViewModel>()
+    private val authViewModel by viewModels<AuthViewModel>()
     private val cameraViewModel by viewModels<CameraViewModel>()
     private val galleryViewModel by viewModels<GalleryViewModel>()
     private val notificationViewModel by viewModels<NotificationViewModel>()
+    private val crimeStatViewModel by viewModels<CrimeStatViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,7 +54,8 @@ class MainActivity : ComponentActivity() {
                         authViewModel = authViewModel,
                         cameraViewModel = cameraViewModel,
                         galleryViewModel = galleryViewModel,
-                        notificationViewModel = notificationViewModel
+                        notificationViewModel = notificationViewModel,
+                        crimeStatViewModel = crimeStatViewModel
                     )
                 }
                 }

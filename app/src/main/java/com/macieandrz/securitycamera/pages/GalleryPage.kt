@@ -26,6 +26,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -45,6 +46,7 @@ import coil3.compose.AsyncImage
 import com.macieandrz.securitycamera.viewModels.GalleryViewModel
 import kotlinx.serialization.Serializable
 import androidx.compose.ui.Alignment
+import com.macieandrz.securitycamera.ui.element.BottomNavigationBar
 import com.macieandrz.securitycamera.viewModels.AuthState
 import com.macieandrz.securitycamera.viewModels.AuthViewModel
 
@@ -58,85 +60,90 @@ fun GalleryPage(
     navController: NavController,
     galleryViewModel: GalleryViewModel
 ) {
-
-
     val userImages by galleryViewModel.userImages.collectAsState()
     var selectedImageUrl by remember { mutableStateOf<String?>(null) }
     var isExpanded by remember { mutableStateOf(false) }
 
-
-
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
+    Scaffold(
         modifier = modifier,
-        contentPadding = PaddingValues(8.dp)
-    ) {
-        items(userImages) { imageUrl ->
-            Card(
-                modifier = Modifier
-                    .padding(4.dp)
-                    .fillMaxWidth()
-                    .heightIn(min = 200.dp)
-                    .aspectRatio(1f),
-                shape = RoundedCornerShape(8.dp),
-                onClick = {
-                    selectedImageUrl = imageUrl
-                    isExpanded = true
+        bottomBar = {
+            BottomNavigationBar(
+                navController = navController,
+                actualPosition = "GalleryPage"
+            )
+        }
+    ) { paddingValues ->
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            modifier = Modifier.padding(paddingValues),
+            contentPadding = PaddingValues(8.dp)
+        ) {
+            items(userImages) { imageUrl ->
+                Card(
+                    modifier = Modifier
+                        .padding(4.dp)
+                        .fillMaxWidth()
+                        .heightIn(min = 200.dp)
+                        .aspectRatio(1f),
+                    shape = RoundedCornerShape(8.dp),
+                    onClick = {
+                        selectedImageUrl = imageUrl
+                        isExpanded = true
+                    }
+                ) {
+                    AsyncImage(
+                        model = imageUrl,
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
                 }
+            }
+        }
+
+        // Transition animation
+        val transition = updateTransition(targetState = isExpanded, label = "ImageTransition")
+        val scale by transition.animateFloat(
+            transitionSpec = { tween(durationMillis = 300) },
+            label = "Scale"
+        ) { expanded ->
+            if (expanded) 1f else 0.5f
+        }
+        val cardAlpha by transition.animateFloat(
+            transitionSpec = { tween(durationMillis = 300) },
+            label = "CardAlpha"
+        ) { expanded ->
+            if (expanded) 1f else 0f
+        }
+
+        // Enlarged photo view
+        if (selectedImageUrl != null) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.8f))
+                    .clickable {
+                        isExpanded = false
+                        selectedImageUrl = null
+                    },
+                contentAlignment = Alignment.Center
             ) {
                 AsyncImage(
-                    model = imageUrl,
+                    model = selectedImageUrl,
                     contentDescription = null,
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop
+                    modifier = Modifier
+                        .graphicsLayer {
+                            scaleX = scale
+                            scaleY = scale
+                            alpha = cardAlpha
+                        }
+                        .fillMaxSize(0.95f)
+                        .animateContentSize(),
+                    contentScale = ContentScale.Fit
                 )
             }
         }
     }
-
-    // Transition animation
-    val transition = updateTransition(targetState = isExpanded, label = "ImageTransition")
-    val scale by transition.animateFloat(
-        transitionSpec = { tween(durationMillis = 300) },
-        label = "Scale"
-    ) { expanded ->
-        if (expanded) 1f else 0.5f
-    }
-    val cardAlpha  by transition.animateFloat(
-        transitionSpec = { tween(durationMillis = 300) },
-        label = "CardAlpha"
-    ) { expanded ->
-        if (expanded) 1f else 0f
-    }
-
-    // Enlarged photo view
-    if (selectedImageUrl != null) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.8f))
-                .clickable {
-                    isExpanded = false
-                    selectedImageUrl = null
-                },
-            contentAlignment = Alignment.Center
-        ) {
-            AsyncImage(
-                model = selectedImageUrl,
-                contentDescription = null,
-                modifier = Modifier
-                    .graphicsLayer {
-                       scaleX = scale
-                        scaleY = scale
-                        alpha = cardAlpha
-                    }
-                    .fillMaxSize(0.95f)
-                    .animateContentSize(),
-                contentScale = ContentScale.Fit
-            )
-        }
-    }
-
 }
 
 

@@ -21,6 +21,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -44,6 +45,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import com.macieandrz.securitycamera.ui.element.BottomNavigationBar
 import com.macieandrz.securitycamera.viewModels.CameraViewModel
 import kotlinx.coroutines.delay
 import kotlinx.serialization.Serializable
@@ -61,85 +63,94 @@ fun CameraPage(
     val cameraPermissionsState = rememberMultiplePermissionsState(
         permissions = listOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
     )
+
     var isCountdownFinished by remember { mutableStateOf(false) }
 
 
-
-    Column(
-        modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        if (!cameraPermissionsState.allPermissionsGranted) {
-            Column {
-                Button(
-                    shape = CutCornerShape(8.dp),
-                    onClick = { cameraPermissionsState.launchMultiplePermissionRequest() },
-                ) {
-                    Text(text = "Ask for permissions")
-                }
-            }
-        }
-
-        if (!isCountdownFinished && cameraPermissionsState.allPermissionsGranted) {
-            AnimatedCounter(
-                startValue = 10, // In seconds
-                style = MaterialTheme.typography.displayLarge,
-                onCountdownFinished = {
-                    isCountdownFinished = true
-                }
+    Scaffold(
+        modifier = modifier,
+        bottomBar = {
+            BottomNavigationBar(
+                navController = navController,
+                actualPosition = "CameraPage"
             )
         }
-    }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            if (!cameraPermissionsState.allPermissionsGranted) {
+                Column {
+                    Button(
+                        shape = CutCornerShape(8.dp),
+                        onClick = { cameraPermissionsState.launchMultiplePermissionRequest() },
+                    ) {
+                        Text(text = "Ask for permissions")
+                    }
+                }
+            }
 
-    if (cameraPermissionsState.allPermissionsGranted && isCountdownFinished) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            var isHumanDetected by remember { mutableStateOf("") }
-
-            val context = LocalContext.current
-            val lifecycleOwner = LocalLifecycleOwner.current
-            val previewView = remember { PreviewView(context) }
-
-            LaunchedEffect(Unit) {
-                cameraViewModel.startCamera(
-                    context = context,
-                    lifecycleOwner = lifecycleOwner,
-                    previewView = previewView,
-                    onPoseDetected = { detected ->
-                        isHumanDetected = detected
+            if (!isCountdownFinished && cameraPermissionsState.allPermissionsGranted) {
+                AnimatedCounter(
+                    startValue = 10, // In seconds
+                    style = MaterialTheme.typography.displayLarge,
+                    onCountdownFinished = {
+                        isCountdownFinished = true
                     }
                 )
             }
 
-            AndroidView(
-                factory = { previewView },
-                modifier = Modifier.fillMaxSize()
-            )
+            if (cameraPermissionsState.allPermissionsGranted && isCountdownFinished) {
+                Box(modifier = Modifier.fillMaxSize()) {
+                    var isHumanDetected by remember { mutableStateOf("") }
+                    val context = LocalContext.current
+                    val lifecycleOwner = LocalLifecycleOwner.current
+                    val previewView = remember { PreviewView(context) }
 
-            Box(
-                modifier = modifier.fillMaxSize(),
-                contentAlignment = Alignment.TopCenter
-            ) {
-                Card(
-                    modifier = Modifier.wrapContentSize(),
-                    elevation = CardDefaults.elevatedCardElevation(5.dp)
-                ) {
-                    Text(
-                        modifier = Modifier.padding(30.dp),
-                        text = isHumanDetected,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.Black,
-                        fontSize = 25.sp,
-                        textAlign = TextAlign.Center
+                    LaunchedEffect(Unit) {
+                        cameraViewModel.startCamera(
+                            context = context,
+                            lifecycleOwner = lifecycleOwner,
+                            previewView = previewView,
+                            onPoseDetected = { detected ->
+                                isHumanDetected = detected
+                            }
+                        )
+                    }
+
+                    AndroidView(
+                        factory = { previewView },
+                        modifier = Modifier.fillMaxSize()
                     )
+
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.TopCenter
+                    ) {
+                        Card(
+                            modifier = Modifier.wrapContentSize(),
+                            elevation = CardDefaults.elevatedCardElevation(5.dp)
+                        ) {
+                            Text(
+                                modifier = Modifier.padding(30.dp),
+                                text = isHumanDetected,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.Black,
+                                fontSize = 25.sp,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    }
                 }
             }
-
-
         }
     }
-    Home(modifier = modifier, navController)
 }
+
 
 @Composable
 fun AnimatedCounter(
@@ -188,34 +199,5 @@ fun AnimatedCounter(
         }
     }
 }
-
-
-@Composable
-fun Home(modifier: Modifier = Modifier,  navController: NavController) {
-    Box(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.BottomEnd
-    ) {
-        Card(
-            modifier = Modifier.wrapContentSize(),
-            elevation = CardDefaults.elevatedCardElevation(5.dp)
-        ) {
-            TextButton(onClick = {
-                navController.navigate(HomeRoute)
-            }) {
-                Text(
-                    text = "Home",
-                    fontSize = 20.sp
-                )
-                Icon(
-                    imageVector = Icons.Filled.Home,
-                    contentDescription = "Back to home"
-                )
-            }
-        }
-    }
-}
-
-
 
 
