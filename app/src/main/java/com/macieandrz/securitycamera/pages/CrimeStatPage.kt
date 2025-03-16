@@ -29,11 +29,11 @@ fun CrimeStatPage(
     navController: NavController,
     crimeStatViewModel: CrimeStatViewModel
 ) {
+    val location by crimeStatViewModel.location.collectAsState(initial = null)
+
 
     var address by remember { mutableStateOf("") }
-    var submittedAddress by remember { mutableStateOf("") }
 
-    val location by crimeStatViewModel.location.collectAsState(initial = null)
 
     Scaffold(
         modifier = modifier,
@@ -55,9 +55,7 @@ fun CrimeStatPage(
 
             Button(onClick = {
                 try {
-
-                    submittedAddress = address
-                    crimeStatViewModel.performFetchSingleLocation(submittedAddress)
+                    crimeStatViewModel.performFetchSingleLocation(address)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }

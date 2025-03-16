@@ -29,7 +29,4 @@ interface LocationDao {
     suspend fun dropDatabase()
 
 
-
-
-
 }
