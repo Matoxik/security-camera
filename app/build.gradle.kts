@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     id("com.google.gms.google-services")
     id("com.google.devtools.ksp")
+    id("androidx.room")
 }
 
 android {
@@ -40,6 +41,10 @@ android {
     buildFeatures {
         compose = true
     }
+
+    room {
+        schemaDirectory("$projectDir/schemas")
+    }
 }
 
 dependencies {
@@ -67,7 +72,7 @@ dependencies {
 
     implementation(libs.androidx.espresso.core)
     implementation(libs.androidx.constraintlayout.compose.android)
-    annotationProcessor (libs.compiler)
+
 
     // Permissions
     implementation (libs.accompanist.permissions)
