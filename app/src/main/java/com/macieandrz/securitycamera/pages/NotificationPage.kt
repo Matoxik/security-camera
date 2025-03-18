@@ -2,6 +2,7 @@ package com.macieandrz.securitycamera.pages
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.res.Configuration
 import android.os.Build
 import android.util.Patterns
 import android.widget.Toast
@@ -19,6 +20,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.input.KeyboardType
@@ -36,7 +38,7 @@ object NotificationRoute
 
 data class FriendEmail(
     val email: String,
-    val uid: String = email // We use email as a unique identifier
+    val uid: String = email // email as a unique identifier
 )
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -47,12 +49,14 @@ fun NotificationPage(
     notificationViewModel: NotificationViewModel
 ) {
     val context = LocalContext.current
-
     // State for the new email
     var newEmail by remember { mutableStateOf("") }
-
     // State for the friend emails list
     val friendEmails by notificationViewModel.friendEmails.collectAsState()
+    val isMotionDetectionEnabled by notificationViewModel.isMotionDetectionEnabled.collectAsState()
+
+    val configuration = LocalConfiguration.current
+    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
     // State for permissions
     val notificationPermissionsState = rememberMultiplePermissionsState(
@@ -68,81 +72,259 @@ fun NotificationPage(
             )
         }
     ) { paddingValues ->
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(paddingValues),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+
         // Checking permissions
-        if (!notificationPermissionsState.allPermissionsGranted && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            Column {
-                Button(
-                    onClick = { notificationPermissionsState.launchMultiplePermissionRequest() },
-                    shape = CutCornerShape(8.dp)
-                ) {
-                    Text(text = "Ask for permissions")
-                }
-            }
-        } else {
-            // Main content
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "Notification settings",
-                    style = MaterialTheme.typography.headlineMedium,
-                    modifier = Modifier.padding(bottom = 16.dp)
-                )
-
-                // Email input row
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    OutlinedTextField(
-                        value = newEmail,
-                        onValueChange = { newEmail = it },
-                        label = { Text("Send notification to") },
-                        modifier = Modifier.weight(1f),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                        placeholder = { Text("Enter email address") }
-                    )
-
-                    Spacer(modifier = Modifier.width(12.dp))
-
+            if (!notificationPermissionsState.allPermissionsGranted && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                Column {
                     Button(
-                        shape = CutCornerShape(8.dp),
-                        onClick = {
-                            if (Patterns.EMAIL_ADDRESS.matcher(newEmail).matches()) {
-                                notificationViewModel.addFriendEmail(FriendEmail(newEmail))
-                                newEmail = "" // Clearing the field
-                                Toast.makeText(context, "Email added correctly", Toast.LENGTH_SHORT).show()
-                            } else {
-                                Toast.makeText(context, "Invalid email address", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                    ){
-                        Text("Add")
+                        onClick = { notificationPermissionsState.launchMultiplePermissionRequest() },
+                        shape = CutCornerShape(8.dp)
+                    ) {
+                        Text(text = "Ask for permissions")
                     }
                 }
-                Spacer(modifier = Modifier.width(12.dp))
-                // List of friend emails
-                FriendEmailList(
-                    emails = friendEmails,
-                    onDelete = { email ->
-                        notificationViewModel.removeFriendEmail(email)
+            } else {
+                // Landscape orientation
+                if (isLandscape) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp)
+                    ) {
+
+                        Column(
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(end = 8.dp),
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            // Email input
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                OutlinedTextField(
+                                    value = newEmail,
+                                    onValueChange = { newEmail = it },
+                                    label = { Text("Send notification to") },
+                                    modifier = Modifier.weight(1f),
+                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                                    placeholder = { Text("Enter email address") }
+                                )
+
+                                Spacer(modifier = Modifier.width(12.dp))
+
+                                Button(
+                                    shape = CutCornerShape(8.dp),
+                                    onClick = {
+                                        if (Patterns.EMAIL_ADDRESS.matcher(newEmail).matches()) {
+                                            notificationViewModel.addFriendEmail(
+                                                FriendEmail(newEmail)
+                                            )
+                                            newEmail = ""
+                                            Toast.makeText(
+                                                context,
+                                                "Email added correctly",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        } else {
+                                            Toast.makeText(
+                                                context,
+                                                "Invalid email address",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                    }
+                                ) {
+                                    Text("Add")
+                                }
+                            }
+
+                            // Motion detection switch
+                            MotionDetectionSwitch(
+                                isMotionDetectionEnabled = isMotionDetectionEnabled,
+                                notificationViewModel = notificationViewModel
+                            )
+                        }
+
+                        Column(
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(start = 8.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                text = "Email list",
+                                style = MaterialTheme.typography.titleMedium,
+                                modifier = Modifier.padding(bottom = 8.dp)
+                            )
+
+                            FriendEmailList(
+                                emails = friendEmails,
+                                onDelete = { email ->
+                                    notificationViewModel.removeFriendEmail(email)
+                                }
+                            )
+                        }
+                    }
+                } else {
+                    // Portrait orientation
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues)
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(paddingValues),
+                            verticalArrangement = Arrangement.Top,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            // Checking permissions
+                            if (!notificationPermissionsState.allPermissionsGranted && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                Column {
+                                    Button(
+                                        onClick = { notificationPermissionsState.launchMultiplePermissionRequest() },
+                                        shape = CutCornerShape(8.dp)
+                                    ) {
+                                        Text(text = "Ask for permissions")
+                                    }
+                                }
+                            } else {
+                                // Main content
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(16.dp),
+                                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Text(
+                                        text = "Notification settings",
+                                        style = MaterialTheme.typography.headlineMedium,
+                                        modifier = Modifier.padding(bottom = 16.dp)
+                                    )
+
+                                    // Email input row
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        OutlinedTextField(
+                                            value = newEmail,
+                                            onValueChange = { newEmail = it },
+                                            label = { Text("Send notification to") },
+                                            modifier = Modifier.weight(1f),
+                                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                                            placeholder = { Text("Enter email address") }
+                                        )
+
+                                        Spacer(modifier = Modifier.width(12.dp))
+
+                                        Button(
+                                            shape = CutCornerShape(8.dp),
+                                            onClick = {
+                                                if (Patterns.EMAIL_ADDRESS.matcher(newEmail)
+                                                        .matches()
+                                                ) {
+                                                    notificationViewModel.addFriendEmail(
+                                                        FriendEmail(
+                                                            newEmail
+                                                        )
+                                                    )
+                                                    newEmail = "" // Clearing the field
+                                                    Toast.makeText(
+                                                        context,
+                                                        "Email added correctly",
+                                                        Toast.LENGTH_SHORT
+                                                    )
+                                                        .show()
+                                                } else {
+                                                    Toast.makeText(
+                                                        context,
+                                                        "Invalid email address",
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+                                                }
+                                            }
+                                        ) {
+                                            Text("Add")
+                                        }
+                                    }
+                                    Spacer(modifier = Modifier.width(12.dp))
+
+                                    // List of friend emails
+                                    FriendEmailList(
+                                        emails = friendEmails,
+                                        onDelete = { email ->
+                                            notificationViewModel.removeFriendEmail(email)
+                                        }
+                                    )
+
+
+                                }
+                            }
+                        }
+
+                        // Motion detection
+                        Spacer(modifier = Modifier.height(12.dp))
+                        MotionDetectionSwitch(
+                            modifier = Modifier
+                                .align(Alignment.BottomCenter)
+                                .padding(bottom = 16.dp, start = 16.dp, end = 16.dp),
+                            isMotionDetectionEnabled,
+                            notificationViewModel
+                        )
+                    }
+                }
+            }
+        }
+}
+
+
+// Motion detection
+@Composable
+fun MotionDetectionSwitch(
+    modifier: Modifier = Modifier,
+    isMotionDetectionEnabled: Boolean,
+    notificationViewModel: NotificationViewModel
+) {
+
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(10.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Camera motion detection",
+                style = MaterialTheme.typography.titleMedium
+            )
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = "Notify when phone position changes",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+
+                Switch(
+                    checked = isMotionDetectionEnabled,
+                    onCheckedChange = { enabled ->
+                        notificationViewModel.setMotionDetectionEnabled(enabled)
                     }
                 )
             }
         }
     }
-}
 }
 
 @Composable
@@ -150,7 +332,10 @@ fun FriendEmailList(
     emails: List<FriendEmail>,
     onDelete: ((FriendEmail) -> Unit)? = null
 ) {
-    Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         if (emails.isEmpty()) {
             Text(
                 text = "List is empty",
@@ -168,7 +353,7 @@ fun FriendEmailLazyColumn(
     emails: List<FriendEmail>,
     onDelete: ((FriendEmail) -> Unit)? = null
 ) {
-    LazyColumn(modifier = Modifier.padding(top = 16.dp)) {
+    LazyColumn(modifier = Modifier.padding(top = 16.dp, bottom = 40.dp)) {
         items(items = emails, key = { it.uid }) { email ->
             FriendEmailRow(email, onDelete)
         }
@@ -233,3 +418,4 @@ fun FriendEmailRow(
         }
     }
 }
+

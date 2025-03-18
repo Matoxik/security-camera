@@ -1,5 +1,6 @@
 package com.macieandrz.securitycamera.viewModels
 
+import MotionDetectionService
 import android.app.Application
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
@@ -31,6 +32,7 @@ import com.google.mlkit.vision.common.InputImage
 import com.macieandrz.securitycamera.data.models.User
 import com.macieandrz.securitycamera.repository.FirebaseRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.tasks.await
 import java.io.File
 import java.io.FileOutputStream
@@ -68,13 +70,49 @@ class CameraViewModel(app: Application) : AndroidViewModel(app) {
     private var lastSaveTime: Long = 0
     private val saveInterval: Long = 60 * 1000 // 1 min
 
+    private var motionDetectionService: MotionDetectionService? = null
+
     @OptIn(ExperimentalGetImage::class)
     fun startCamera(
         context: Context,
         lifecycleOwner: LifecycleOwner,
         previewView: PreviewView,
-        onPoseDetected: (String) -> Unit
+        onPoseDetected: (String) -> Unit,
+        motionDetectionEnabled: Boolean = false
     ) {
+        // Motion detection
+        if (motionDetectionService == null) {
+            motionDetectionService = MotionDetectionService(
+                context = context,
+                coroutineScope = viewModelScope
+            ) {
+                // Callback triggered when motion is detected
+                val currentUserId = repo.getCurrentUserId() ?: return@MotionDetectionService
+                val userDoc = repo.getFirestore()
+                    .collection("users")
+                    .document(currentUserId)
+                    .get()
+                    .await()
+                val user = userDoc.toObject(User::class.java)
+                val friendsEmails = user?.friendsEmail ?: emptyList()
+
+                if (friendsEmails.isNotEmpty()) {
+                    repo.sendNotificationsViaFirestore(
+                        friendsEmails,
+                        "Wykryto ruch telefonu",
+                        "Wykryto zmianę położenia kamery",
+                        viewModelScope
+                    )
+                    Log.d("DEBUG", "Send motion notification")
+                }
+            }
+            motionDetectionService?.initialize()
+        }
+
+        // Turn motion detection on/off
+        motionDetectionService?.setEnabled(motionDetectionEnabled)
+
+        // Camera
         viewModelScope.launch {
             val cameraProvider = ProcessCameraProvider.getInstance(context).await()
             val cameraSelector = CameraSelector.Builder()
@@ -123,8 +161,11 @@ class CameraViewModel(app: Application) : AndroidViewModel(app) {
                         if (humanDetected == "Human found" &&
                             System.currentTimeMillis() - lastSaveTime >= saveInterval
                         ) {
-                            takePhoto(context) {
-                                repo.enqueueTasksChain() // Start background tasks after taking photo
+                            viewModelScope.launch(Dispatchers.IO) {
+                                delay(500)
+                                takePhoto(context) {
+                                    repo.enqueueTasksChain() // Start background tasks after taking photo
+                                }
                             }
                             lastSaveTime = System.currentTimeMillis()
                         }
@@ -194,6 +235,7 @@ class CameraViewModel(app: Application) : AndroidViewModel(app) {
     override fun onCleared() {
         super.onCleared()
         poseDetector.close()
+        motionDetectionService?.release()
     }
 }
 

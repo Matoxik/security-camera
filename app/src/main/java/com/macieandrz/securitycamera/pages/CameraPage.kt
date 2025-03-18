@@ -26,6 +26,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -47,6 +48,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.macieandrz.securitycamera.ui.element.BottomNavigationBar
 import com.macieandrz.securitycamera.viewModels.CameraViewModel
+import com.macieandrz.securitycamera.viewModels.NotificationViewModel
 import kotlinx.coroutines.delay
 import kotlinx.serialization.Serializable
 
@@ -58,13 +60,16 @@ object CameraRoute
 fun CameraPage(
     modifier: Modifier = Modifier,
     navController: NavController,
-    cameraViewModel: CameraViewModel
+    cameraViewModel: CameraViewModel,
+    notificationViewModel: NotificationViewModel
 ) {
     val cameraPermissionsState = rememberMultiplePermissionsState(
         permissions = listOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
     )
 
     var isCountdownFinished by remember { mutableStateOf(false) }
+
+    val isMotionDetectionEnabled by notificationViewModel.isMotionDetectionEnabled.collectAsState()
 
 
     Scaffold(
@@ -118,7 +123,9 @@ fun CameraPage(
                             previewView = previewView,
                             onPoseDetected = { detected ->
                                 isHumanDetected = detected
-                            }
+                            },
+                            motionDetectionEnabled = isMotionDetectionEnabled
+
                         )
                     }
 

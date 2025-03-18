@@ -54,7 +54,7 @@ fun MyAppNavigation(
             ResetPassPage(modifier, navController, authViewModel)
         }
         composable<CameraRoute> {
-            CameraPage(modifier, navController, cameraViewModel)
+            CameraPage(modifier, navController, cameraViewModel, notificationViewModel)
         }
         composable<GalleryRoute> {
             GalleryPage(modifier, navController, galleryViewModel)

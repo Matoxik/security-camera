@@ -5,5 +5,6 @@ data class User(
     val email: String? = null,
     val images: List<String>? = null,
     val fcmToken: String? = null,
-    val friendsEmail: List<String>? = null
+    val friendsEmail: List<String>? = null,
+    val motionDetectionEnabled: Boolean = false
 )

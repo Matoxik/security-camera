@@ -22,6 +22,9 @@ class NotificationViewModel(app: Application) : AndroidViewModel(app) {
     private val _friendEmails = MutableStateFlow<List<FriendEmail>>(emptyList())
     val friendEmails: StateFlow<List<FriendEmail>> = _friendEmails
 
+    private val _isMotionDetectionEnabled = MutableStateFlow(false)
+    val isMotionDetectionEnabled: StateFlow<Boolean> = _isMotionDetectionEnabled
+
     init {
         setupAuthStateListener()
     }
@@ -58,6 +61,7 @@ class NotificationViewModel(app: Application) : AndroidViewModel(app) {
                 val user = userDoc.toObject(User::class.java)
                 val emails = user?.friendsEmail ?: emptyList()
                 _friendEmails.value = emails.map { FriendEmail(it) }
+                _isMotionDetectionEnabled.value = user?.motionDetectionEnabled ?: false
             } catch (e: Exception) {
                 Log.e("DEBUG", "NotificationViewModel fetchFriendEmails() failed: ${e.message}")
             }
@@ -95,5 +99,25 @@ class NotificationViewModel(app: Application) : AndroidViewModel(app) {
             repo.updateUserFriendList(userUpdate)
         }
     }
+
+    fun setMotionDetectionEnabled(enabled: Boolean) {
+        _isMotionDetectionEnabled.value = enabled
+        updateMotionDetectionSetting()
+    }
+
+    private fun updateMotionDetectionSetting() {
+        viewModelScope.launch {
+            try {
+                val currentUserId = repo.getCurrentUserId() ?: return@launch
+                repo.getFirestore().collection("users").document(currentUserId)
+                    .update("motionDetectionEnabled", _isMotionDetectionEnabled.value)
+                    .await()
+            } catch (e: Exception) {
+                Log.e("DEBUG", "Motion detection setting update error: ${e.message}")
+            }
+        }
+    }
+
 }
+
 
