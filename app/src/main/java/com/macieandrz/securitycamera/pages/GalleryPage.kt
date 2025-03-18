@@ -76,9 +76,9 @@ fun GalleryPage(
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
             modifier = Modifier.padding(paddingValues),
-            contentPadding = PaddingValues(8.dp)
+            contentPadding = PaddingValues(8.dp),
         ) {
-            items(userImages) { imageUrl ->
+            items(userImages.reversed()) { imageUrl ->
                 Card(
                     modifier = Modifier
                         .padding(4.dp)
