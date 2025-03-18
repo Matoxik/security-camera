@@ -91,7 +91,7 @@ fun HomePage(
                         },
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Spacer(Modifier.size(24.dp))
+                    Spacer(Modifier.size(34.dp))
 
                     Image(
                         modifier = Modifier.size(140.dp),
@@ -116,7 +116,7 @@ fun HomePage(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 item {
-                    Spacer(Modifier.size(24.dp))
+                    Spacer(Modifier.size(10.dp))
                     // Turn on security camera button
                     Button(
                         modifier = Modifier.fillMaxWidth(),

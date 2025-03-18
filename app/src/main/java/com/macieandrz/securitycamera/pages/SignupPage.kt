@@ -104,7 +104,7 @@ fun SignupPage(modifier: Modifier = Modifier,
                         },
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Spacer(Modifier.size(24.dp))
+                    Spacer(Modifier.size(34.dp))
 
                     Image(
                         modifier = Modifier.size(140.dp),

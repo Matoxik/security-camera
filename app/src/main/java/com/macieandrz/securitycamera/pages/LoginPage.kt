@@ -80,11 +80,13 @@ fun LoginPage(
             LaunchedEffect(authState.value) {
                 when (authState.value) {
                     is AuthState.Authenticated -> navController.navigate(HomeRoute)
-                    is AuthState.Error -> Toast.makeText(
+                    is AuthState.Error -> {Toast.makeText(
                         context,
                         (authState.value as AuthState.Error).message,
                         Toast.LENGTH_SHORT
                     ).show()
+
+                    }
 
                     else -> Unit
                 }
@@ -101,7 +103,7 @@ fun LoginPage(
                         },
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Spacer(Modifier.size(24.dp))
+                    Spacer(Modifier.size(34.dp))
 
                     Image(
                         modifier = Modifier.size(140.dp),
@@ -124,7 +126,7 @@ fun LoginPage(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 item {
-                Spacer(Modifier.size(16.dp))
+                Spacer(Modifier.size(10.dp))
                 Text(
                     text = "Login", fontSize = 32.sp,
                     color = MaterialTheme.colorScheme.onBackground
