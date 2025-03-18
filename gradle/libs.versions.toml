@@ -7,6 +7,8 @@ coilCompose = "3.1.0"
 coilNetworkOkhttp = "3.1.0"
 concurrentFuturesKtx = "1.2.0"
 converterMoshi = "2.4.0"
+core = "1.1.0-eap1"
+desugar_jdk_libs = "2.1.5"
 guava = "32.1.3-android"
 kotlin = "2.0.21"
 coreKtx = "1.15.0"
@@ -25,6 +27,7 @@ retrofit = "2.11.0"
 roomCompiler = "2.6.1"
 roomKtx = "2.6.1"
 roomRuntime = "2.6.1"
+viz = "0.8.12"
 workRuntimeKtx = "2.10.0"
 constraintlayoutComposeAndroid = "1.1.1"
 kotlinxSerializationJson = "1.7.1"
@@ -47,6 +50,8 @@ androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
 coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilNetworkOkhttp" }
 converter-moshi = { module = "com.squareup.retrofit2:converter-moshi", version.ref = "converterMoshi" }
+core = { module = "io.data2viz.charts:core", version.ref = "core" }
+desugar_jdk_libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar_jdk_libs" }
 firebase-auth = { module = "com.google.firebase:firebase-auth" }
 firebase-firestore = { module = "com.google.firebase:firebase-firestore" }
 firebase-messaging = { module = "com.google.firebase:firebase-messaging" }
@@ -73,6 +78,7 @@ pose-detection = { module = "com.google.mlkit:pose-detection", version.ref = "po
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 androidx-constraintlayout-compose-android = { group = "androidx.constraintlayout", name = "constraintlayout-compose-android", version.ref = "constraintlayoutComposeAndroid" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+viz = { module = "io.data2viz.d2v:viz", version.ref = "viz" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

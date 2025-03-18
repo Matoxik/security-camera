@@ -73,6 +73,10 @@ dependencies {
     implementation(libs.androidx.espresso.core)
     implementation(libs.androidx.constraintlayout.compose.android)
 
+    // Charts
+    implementation (libs.core)
+    implementation (libs.viz)
+    coreLibraryDesugaring (libs.desugar.jdk.libs)
 
     // Permissions
     implementation (libs.accompanist.permissions)

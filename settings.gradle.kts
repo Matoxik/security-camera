@@ -16,6 +16,8 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven("https://maven.pkg.jetbrains.space/data2viz/p/maven/dev")
+        maven("https://maven.pkg.jetbrains.space/data2viz/p/maven/public")
     }
 }
 

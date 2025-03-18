@@ -8,7 +8,7 @@ import androidx.room.TypeConverters
 import com.macieandrz.securitycamera.data.models.CrimeStatItem
 import com.macieandrz.securitycamera.data.models.Location
 
-@Database(entities = [CrimeStatItem::class], version = 1, exportSchema = false)
+@Database(entities = [CrimeStatItem::class], version = 3, exportSchema = false)
 abstract class CrimeStatDatabase : RoomDatabase() {
     abstract fun crimeStatDao(): CrimeStatDao
 

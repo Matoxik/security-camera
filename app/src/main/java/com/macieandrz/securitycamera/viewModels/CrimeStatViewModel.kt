@@ -22,11 +22,13 @@ private val repo = CrimeStatRepository(app.applicationContext)
     val location = _location.asStateFlow()
 
 
-    fun performFetchSingleLocation(address: String) = viewModelScope.launch {
+    fun performFetchSingleLocation(caseSensitiveAddress: String) = viewModelScope.launch {
+        val address = caseSensitiveAddress.lowercase().trim()
+        Log.d("DEBUG", "Current address: $address")
         try {
             val local = repo.getLocation(address).first()
-
             if (local != null) {
+                Log.d("DEBUG", "Local adress fetch")
                 _location.update { local }
                 return@launch
             }
@@ -53,38 +55,55 @@ private val repo = CrimeStatRepository(app.applicationContext)
 
     }
 
-    private val _crimeStat = MutableStateFlow<CrimeStatItem?>(null)
+    private val _crimeStat = MutableStateFlow<List<CrimeStatItem>?>(null)
     val crimeStat = _crimeStat.asStateFlow()
 
     fun performFetchSingleCrimeStat(date: String, latitude: Double, longitude: Double) = viewModelScope.launch{
         try {
+
             val local = repo.getCategory(date, latitude, longitude).first()
 
+
             if (local != null) {
-                _crimeStat.update { local }
-                return@launch
+                if (local.isNotEmpty()) {
+                    Log.d("DEBUG", "Local crime data fetch $local")
+                    _crimeStat.update { local }
+                    return@launch
+                }
             }
 
             try {
+
                 val remote = repo.loadCategory(date, latitude, longitude)
                 if (remote.isSuccessful){
                     val data = remote.body()
-                    Log.d("DEBUG", "Fetched crime stat data: $data")
+                    Log.d("DEBUG", "Fetched api crime stat data: $data")
                     if (data != null){
                         _crimeStat.update { data }
-                        repo.insertCrimeStat(listOf(data))
+                        repo.insertCrimeStat(data)
                     }
+
                 }
             } catch (e: Exception) {
                 Log.e("DEBUG", "Crime stat API Request Failed", e)
-
             }
+
         }  catch (e: Exception) {
             Log.e("DEBUG", "Fetching crime stats failed (Local or Network)", e)
         }
     }
 
 
+    fun clearDatabases() = viewModelScope.launch {
+        try {
+            repo.clearDatabases()
+            _location.update { null }
+            _crimeStat.update { null }
+            Log.d("DEBUG", "Databases cleared successfully")
+        } catch (e: Exception) {
+            Log.e("DEBUG", "Cannot clear databases", e)
+        }
+    }
 
 
 

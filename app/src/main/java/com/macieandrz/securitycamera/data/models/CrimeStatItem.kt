@@ -12,7 +12,6 @@ import com.squareup.moshi.JsonClass
 data class CrimeStatItem(
     @Json(name = "category")
     val category: String,
-
     @PrimaryKey
     @Json(name = "id")
     val id: Int,

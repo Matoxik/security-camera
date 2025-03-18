@@ -147,7 +147,7 @@ fun LoginPage(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Column(
-                    modifier = Modifier.wrapContentWidth() // Kolumna nie zajmuje całej szerokości
+                    modifier = Modifier.wrapContentWidth()
                 ) {
                     OutlinedTextField(
                         value = password,
@@ -162,11 +162,11 @@ fun LoginPage(
                                 )
                             }
                         },
-                        modifier = Modifier.wrapContentWidth() // OutlinedTextField nie zajmuje całej szerokości
+                        modifier = Modifier.wrapContentWidth()
                     )
                     TextButton(
                         onClick = { navController.navigate(ResetPassRoute) },
-                        modifier = Modifier.align(Alignment.End) // Przyczepienie do prawej krawędzi
+                        modifier = Modifier.align(Alignment.End)
                     ) {
                         Text(
                             text = "Forgot Password?",

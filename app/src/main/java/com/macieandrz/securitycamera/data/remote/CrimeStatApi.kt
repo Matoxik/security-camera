@@ -18,9 +18,9 @@ interface CrimeStatApi {
     @GET("crimes-at-location")
     suspend fun getCategory(
         @Query("date") date: String,
-        @Query("lat") latitude: Double,
-        @Query("lng") longitude: Double
-    ) : Response<CrimeStatItem>
+        @Query("lat") lat: Double,
+        @Query("lng") lng: Double
+    ) : Response<List<CrimeStatItem>>
 
 
 }

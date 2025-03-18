@@ -25,8 +25,8 @@ interface CrimeStatDao {
     suspend fun update(crimeStat: CrimeStatItem)
 
 
-    @Query("SELECT * FROM crime_stat_table WHERE latitude = :latitude AND longitude = :longitude AND month = :date")
-    fun getCategory(date: String, latitude: Double, longitude: Double): Flow<CrimeStatItem?>
+    @Query("SELECT * FROM crime_stat_table WHERE ABS(latitude - :latitude) < 0.01 AND ABS(longitude - :longitude) < 0.01 AND month = :date")
+    fun getCategory(date: String, latitude: Double, longitude: Double): Flow<List<CrimeStatItem>?>
 
     @Query("DELETE FROM crime_stat_table")
     suspend fun dropDatabase()

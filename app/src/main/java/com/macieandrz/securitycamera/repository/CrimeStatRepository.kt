@@ -41,17 +41,23 @@ class CrimeStatRepository(context: Context) {
 
 
     // Get data from api
-    suspend fun loadCategory(date: String, latitude: Double, longitude: Double): Response<CrimeStatItem> {
+    suspend fun loadCategory(date: String, latitude: Double, longitude: Double): Response<List<CrimeStatItem>> {
         return crimeStatApi.getCategory(date, latitude, longitude)
     }
 
     // Get data from local database
-    fun getCategory(date: String, latitude: Double, longitude: Double) : Flow<CrimeStatItem?>{
+    fun getCategory(date: String, latitude: Double, longitude: Double) : Flow<List<CrimeStatItem>?>{
         return crimeStatDao.getCategory(date, latitude, longitude)
     }
 
     suspend fun insertCrimeStat(list: List<CrimeStatItem>) = withContext(Dispatchers.IO) {
         crimeStatDao.insert(list)
     }
+
+    suspend fun clearDatabases() = withContext(Dispatchers.IO) {
+        locationDao.dropDatabase()
+        crimeStatDao.dropDatabase()
+    }
+
 
 }

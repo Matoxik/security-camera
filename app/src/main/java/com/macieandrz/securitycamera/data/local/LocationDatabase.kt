@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.macieandrz.securitycamera.data.models.Location
 
-@Database(entities = [Location::class], version = 1, exportSchema = false)
+@Database(entities = [Location::class], version = 2, exportSchema = false)
 abstract class LocationDatabase : RoomDatabase() {
     abstract fun locationDao(): LocationDao
 
