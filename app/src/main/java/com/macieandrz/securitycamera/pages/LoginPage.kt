@@ -85,7 +85,7 @@ fun LoginPage(
                         (authState.value as AuthState.Error).message,
                         Toast.LENGTH_SHORT
                     ).show()
-
+                    authViewModel.resetAuthState()
                     }
 
                     else -> Unit

@@ -71,17 +71,21 @@ fun ResetPassPage(
             LaunchedEffect(authState.value) {
                 when (authState.value) {
                     is AuthState.Authenticated -> navController.navigate(HomeRoute)
-                    is AuthState.Error -> Toast.makeText(
+                    is AuthState.Error -> {Toast.makeText(
                         context,
                         (authState.value as AuthState.Error).message,
                         Toast.LENGTH_SHORT
                     ).show()
+                        authViewModel.resetAuthState()
+                    }
 
-                    is AuthState.PasswordReseted -> Toast.makeText(
+                    is AuthState.PasswordReseted -> {Toast.makeText(
                         context,
                         "Email sent successfully to reset your password!",
                         Toast.LENGTH_SHORT
                     ).show()
+                        authViewModel.resetAuthState()
+                    }
 
                     else -> Unit
                 }

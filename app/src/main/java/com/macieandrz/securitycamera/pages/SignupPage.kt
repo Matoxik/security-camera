@@ -83,11 +83,13 @@ fun SignupPage(modifier: Modifier = Modifier,
             LaunchedEffect(authState.value) {
                 when (authState.value) {
                     is AuthState.Authenticated -> navController.navigate(HomeRoute)
-                    is AuthState.Error -> Toast.makeText(
+                    is AuthState.Error -> {Toast.makeText(
                         context,
                         (authState.value as AuthState.Error).message,
                         Toast.LENGTH_SHORT
                     ).show()
+                        authViewModel.resetAuthState()
+                    }
 
                     else -> Unit
                 }

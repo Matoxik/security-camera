@@ -119,6 +119,11 @@ class AuthViewModel(app: Application) : AndroidViewModel(app) {
 
         }
     }
+
+    fun resetAuthState() {
+        _authState.value = AuthState.UnAuthenticated
+    }
+
 }
 
 sealed class AuthState {
