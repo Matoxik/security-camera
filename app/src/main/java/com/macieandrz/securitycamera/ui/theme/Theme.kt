@@ -1,6 +1,5 @@
 package com.macieandrz.securitycamera.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -9,29 +8,36 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Orange80,
-    secondary = OrangeGrey80,
-    tertiary = Yellow80,
-    background = DarkGrey,
-    surface = DarkBlue,
-    onPrimary = Color.Black,
-    onSecondary = Color.Black,
-    onTertiary = Color.Black
+    primary = DarkOrange,
+    onPrimary = DarkOnPrimary,
+    primaryContainer = DarkPrimaryContainer,
+    onPrimaryContainer = DarkOnPrimaryContainer,
+    secondary = DarkSecondary,
+    onSecondary = DarkOnSecondary,
+    tertiary = DarkTertiary,
+    onTertiary = DarkOnTertiary,
+    background = DarkBackground,
+    onBackground = DarkOnBackground,
+    surface = DarkSurface,
+    onSurface = DarkOnSurface,
+    error = DarkError,
+    onError = DarkOnError,
+    outline = DarkOutline
 )
 
+
 private val LightColorScheme = lightColorScheme(
-    primary = Orange40,
+    primary = Yellow40,
     secondary = OrangeGrey40,
     tertiary = Yellow40,
     background = WarmYellow,
     surface = LightYellow,
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.Black
+    onPrimary = LightOnPrimary,
+    onSecondary = LightOnSecondary,
+    onTertiary = LightOnTertiary
 )
 
 @Composable

@@ -122,7 +122,7 @@ fun HomePage(
                     Button(
                         modifier = Modifier.fillMaxWidth(),
                         onClick = { navController.navigate(CameraRoute) },
-                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surface),
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary),
                         contentPadding = androidx.compose.foundation.layout.PaddingValues(8.dp)
                     ) {
                         Row(
@@ -147,7 +147,7 @@ fun HomePage(
                             Text(
                                 text = "Turn on security camera",
                                 fontSize = 18.sp,
-                                color = MaterialTheme.colorScheme.onSurface
+                                color = MaterialTheme.colorScheme.onTertiary
                             )
                         }
                     }
@@ -158,7 +158,7 @@ fun HomePage(
                     Button(
                         modifier = Modifier.fillMaxWidth(),
                         onClick = { navController.navigate(GalleryRoute) },
-                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surface),
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary),
                         contentPadding = androidx.compose.foundation.layout.PaddingValues(8.dp)
                     ) {
                         Row(
@@ -183,7 +183,7 @@ fun HomePage(
                             Text(
                                 text = "Gallery",
                                 fontSize = 18.sp,
-                                color = MaterialTheme.colorScheme.onSurface
+                                color = MaterialTheme.colorScheme.onTertiary
                             )
                         }
                     }
@@ -194,7 +194,7 @@ fun HomePage(
                     Button(
                         modifier = Modifier.fillMaxWidth(),
                         onClick = { navController.navigate(CrimeStatRoute) },
-                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surface),
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary),
                         contentPadding = androidx.compose.foundation.layout.PaddingValues(8.dp)
                     ) {
                         Row(
@@ -219,7 +219,7 @@ fun HomePage(
                             Text(
                                 text = "Crime statistics",
                                 fontSize = 18.sp,
-                                color = MaterialTheme.colorScheme.onSurface
+                                color = MaterialTheme.colorScheme.onTertiary
                             )
                         }
                     }
@@ -230,7 +230,7 @@ fun HomePage(
                     Button(
                         modifier = Modifier.fillMaxWidth(),
                         onClick = { navController.navigate(NotificationRoute) },
-                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surface),
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary),
                         contentPadding = androidx.compose.foundation.layout.PaddingValues(8.dp)
                     ) {
                         Row(
@@ -255,7 +255,7 @@ fun HomePage(
                             Text(
                                 text = "Notification settings",
                                 fontSize = 18.sp,
-                                color = MaterialTheme.colorScheme.onSurface
+                                color = MaterialTheme.colorScheme.onTertiary
                             )
                         }
                     }
@@ -267,7 +267,7 @@ fun HomePage(
                     Button(
                         modifier = Modifier.fillMaxWidth(),
                         onClick = { authViewModel.signout() },
-                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surface),
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary),
                         contentPadding = androidx.compose.foundation.layout.PaddingValues(8.dp)
                     ) {
                         Row(
@@ -292,7 +292,7 @@ fun HomePage(
                             Text(
                                 text = "Logout",
                                 fontSize = 18.sp,
-                                color = MaterialTheme.colorScheme.onSurface
+                                color = MaterialTheme.colorScheme.onTertiary
                             )
                         }
                     }

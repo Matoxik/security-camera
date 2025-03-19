@@ -2,36 +2,35 @@ package com.macieandrz.securitycamera.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
 
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
-
-val LightGreen = Color(0xFFB1F1C1)
-val LightOrange = Color(0xFFFFD399)
-val LightRed = Color(0xFFFFDBD0)
-val LightBlue = Color(0xFFC4CFDD)
-val LightYellow = Color(0xFFFFF9E5)
-val MediumYellow = Color(0xFFFFF3CC)
-val MediumGrey = Color(0xFF4C4C4C)
-val DarkBlue = Color(0xFF3D5F90)
-val DarkGrey = Color(0xFF474747)
-
-val Orange80 = Color(0xFFFFB74D)
-val OrangeGrey80 = Color(0xFFB97A57)
-val Yellow80 = Color(0xFFFFE082)
-val Orange40 = Color(0xFFFF9800)
-val OrangeGrey40 = Color(0xFF8D6E63)
 val Yellow40 = Color(0xFFFFC107)
-
-val DeepOrange = Color(0xFFE65100)
-val Amber = Color(0xFFFFD54F)
-val DarkerOrange = Color(0xFFBF360C)
+val OrangeGrey40 = Color(0xFF8D6E63)
 val WarmYellow = Color(0xFFFFF3E0)
-val Golden = Color(0xFFFFE57F)
+val LightYellow = Color(0xFFFFF9E5)
+
+// DarkColorScheme
+val DarkOrange = Color(0xFFFF9800)
+val DarkPrimaryContainer = Color(0xFFE65100)
+val DarkSecondary = Color(0xFFFFB74D)
+val DarkTertiary = Color(0xFF474747)
+val DarkBackground = Color(0xFF121212)
+val DarkSurface = Color(0xFF1E1E1E)
+val DarkError = Color(0xFFCF6679)
+val DarkOutline = Color(0xFF474747)
+
+// LightColorScheme
+val LightOnPrimary = Color.White
+val LightOnSecondary = Color.White
+val LightOnTertiary = Color.Black
+
+// DarkColorScheme
+val DarkOnPrimary = Color.Black
+val DarkOnPrimaryContainer = Color.White
+val DarkOnSecondary = Color.Black
+val DarkOnTertiary = Color.White
+val DarkOnBackground = Color.White
+val DarkOnSurface = Color.White
+val DarkOnError = Color.Black
 
 // Icons
 val homeBackground = Color(0xFFFFEBEE)
