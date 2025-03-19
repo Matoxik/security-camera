@@ -1,10 +1,8 @@
 package com.macieandrz.securitycamera.repository
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import androidx.work.Constraints
-import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
@@ -16,12 +14,10 @@ import com.google.firebase.storage.FirebaseStorage
 import com.macieandrz.securitycamera.data.models.User
 import com.macieandrz.securitycamera.data.workers.ClearCacheWorker
 import com.macieandrz.securitycamera.data.workers.SendImageToServerWorker
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.tasks.await
-import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 
 class FirebaseRepository(context: Context) {

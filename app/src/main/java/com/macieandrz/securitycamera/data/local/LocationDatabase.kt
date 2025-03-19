@@ -13,7 +13,6 @@ abstract class LocationDatabase : RoomDatabase() {
 }
 
 
-
 object LocationDb {
     private var db: LocationDatabase? = null
 

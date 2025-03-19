@@ -16,6 +16,7 @@ interface LocationApi {
     //https://maps.googleapis.com/maps/api/geocode/json?
     //address=London,UK&key=AIzaSyCr_eltKVyLAw8y3vyr8mvx8DxyTeI0xjs
 
+    // Request to api using retrofit
     @GET("json")
     suspend fun getLocation(
         @Query("address") address: String,
@@ -26,6 +27,7 @@ interface LocationApi {
 }
 
 object RemoteSource {
+
     private val moshi = Moshi.Builder()
         .add(GeocodingAdapter())
         .add(KotlinJsonAdapterFactory())

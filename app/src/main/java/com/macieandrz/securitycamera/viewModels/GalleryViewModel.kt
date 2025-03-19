@@ -61,7 +61,6 @@ class GalleryViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    // Important: Clear the listener when the ViewModel is destroyed
     override fun onCleared() {
         super.onCleared()
         listenerRegistration?.remove()

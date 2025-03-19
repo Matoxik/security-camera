@@ -30,20 +30,24 @@ fun CrimeStatPage(
     navController: NavController,
     crimeStatViewModel: CrimeStatViewModel
 ) {
+    // State variables for UI
     val location by crimeStatViewModel.location.collectAsState(initial = null)
     val crimeStats by crimeStatViewModel.crimeStat.collectAsState(initial = null)
     var address by remember { mutableStateOf("") }
 
-    // For date handling
+    // Date handling
     val currentDate = remember { Calendar.getInstance() }
     val currentDateMillis = remember { currentDate.timeInMillis }
 
+    // Check if the device is in landscape orientation
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
+    // Date picker state setup
     val dateState = rememberDatePickerState(
         initialSelectedDateMillis = currentDateMillis,
         selectableDates = object : SelectableDates {
+            // Ensure only past and present dates are selectable
             override fun isSelectableDate(utcTimeMillis: Long): Boolean {
                 return utcTimeMillis <= currentDateMillis
             }
@@ -56,7 +60,7 @@ fun CrimeStatPage(
 
     var showDateDialog by remember { mutableStateOf(false) }
 
-    // Initialization with current date in YYYY-MM format
+    // Initialize date with current date in YYYY-MM format
     val initialDate = remember {
         val year = currentDate.get(Calendar.YEAR)
         val month = currentDate.get(Calendar.MONTH) - 1
@@ -76,14 +80,16 @@ fun CrimeStatPage(
         }
     }
 
+    // Render different layouts based on orientation
     if (isLandscape) {
+        // Landscape layout
         crimeStats?.let {
             if (it.isNotEmpty()) {
                 CrimeStatChart(crimeStats = it)
             }
         }
     } else {
-
+        // Portrait layout
         Scaffold(
             modifier = modifier,
             bottomBar = {
@@ -93,6 +99,7 @@ fun CrimeStatPage(
                 )
             },
             floatingActionButton = {
+                // FAB to clear databases
                 SmallFloatingActionButton(
                     onClick = {
                         crimeStatViewModel.clearDatabases()
@@ -109,9 +116,13 @@ fun CrimeStatPage(
             },
             floatingActionButtonPosition = FabPosition.End
         ) { paddingValues ->
-            Column(modifier = Modifier.padding(paddingValues).padding(16.dp)) {
-                // Date selection
-                Row(modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)) {
+            Column(modifier = Modifier
+                .padding(paddingValues)
+                .padding(16.dp)) {
+                // Date selection UI
+                Row(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp)) {
                     TextField(
                         value = date,
                         onValueChange = { /* Read-only field */ },
@@ -129,14 +140,17 @@ fun CrimeStatPage(
                     }
                 }
 
-                // Location selection field
+                // Location input field
                 TextField(
                     value = address,
                     onValueChange = { address = it },
                     label = { Text("Location") },
-                    modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp)
                 )
 
+                // Search button
                 Button(
                     onClick = {
                         if (address.isNotBlank()) {
@@ -151,7 +165,7 @@ fun CrimeStatPage(
 
                 Spacer(modifier = Modifier.height(14.dp))
 
-                // Display chart if data is available
+                // Display chart or message based on available data
                 crimeStats?.let {
                     if (it.isNotEmpty()) {
                         CrimeStatChart(crimeStats = it)
@@ -164,7 +178,7 @@ fun CrimeStatPage(
                     }
                 }
 
-                // Material 3 Date Picker Dialog
+                // Date Picker Dialog
                 if (showDateDialog) {
                     DatePickerDialog(
                         onDismissRequest = { showDateDialog = false },
@@ -180,10 +194,9 @@ fun CrimeStatPage(
                                         val month = calendar.get(Calendar.MONTH) + 1
                                         val newDate = "${year}-${month.toString().padStart(2, '0')}"
 
-                                        // Update date only if it actually changed
+                                        // Update date and fetch new statistics if date changed
                                         if (newDate != date) {
                                             date = newDate
-                                            // Automatically update statistics if location is available
                                             updateCrimeStats()
                                         }
                                     }
@@ -209,7 +222,7 @@ fun CrimeStatPage(
             }
         }
 
-        // Effect to observe changes in location and automatically fetch statistics
+        // Effect to automatically fetch statistics when location changes
         LaunchedEffect(location) {
             if (location != null) {
                 updateCrimeStats()

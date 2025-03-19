@@ -7,8 +7,6 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.macieandrz.securitycamera.data.models.CrimeStatItem
-import com.macieandrz.securitycamera.data.models.*
-import com.macieandrz.securitycamera.data.models.CrimeStatLocation
 import kotlinx.coroutines.flow.Flow
 
 

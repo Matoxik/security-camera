@@ -4,7 +4,6 @@ import android.content.res.Configuration
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -46,7 +45,6 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import com.macieandrz.securitycamera.R
-import com.macieandrz.securitycamera.data.models.User
 import com.macieandrz.securitycamera.viewModels.AuthState
 import com.macieandrz.securitycamera.viewModels.AuthViewModel
 import kotlinx.serialization.Serializable

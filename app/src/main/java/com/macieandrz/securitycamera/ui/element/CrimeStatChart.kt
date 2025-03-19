@@ -28,7 +28,7 @@ fun CrimeStatChart(crimeStats: List<CrimeStatItem>) {
 }
 
 class CrimeStatChartView(context: Context) : VizContainerView(context) {
-   // private var mSize: Size
+
    private var mSize = Size(500.0, 500.0)
     private var w: Int = 0
     private var h: Int = 0

@@ -208,6 +208,7 @@ class CameraViewModel(app: Application) : AndroidViewModel(app) {
                                 val timestamp = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
                                     .format(Date())
 
+                                // Send notification
                                 repo.sendNotificationsViaFirestore(
                                     friendsEmails,
                                     "Wykryto człowieka",

@@ -7,6 +7,8 @@ import androidx.room.PrimaryKey
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
+// Main crime statistics structure for local database
+
 @Entity(tableName = "crime_stat_table")
 @JsonClass(generateAdapter = true)
 data class CrimeStatItem(

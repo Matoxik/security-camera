@@ -14,16 +14,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CutCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -52,6 +48,7 @@ import com.macieandrz.securitycamera.viewModels.NotificationViewModel
 import kotlinx.coroutines.delay
 import kotlinx.serialization.Serializable
 
+// Define the CameraRoute object for navigation
 @Serializable
 object CameraRoute
 
@@ -63,14 +60,16 @@ fun CameraPage(
     cameraViewModel: CameraViewModel,
     notificationViewModel: NotificationViewModel
 ) {
+    // Request camera and storage permissions
     val cameraPermissionsState = rememberMultiplePermissionsState(
         permissions = listOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
     )
 
+    // State to track if the countdown is finished
     var isCountdownFinished by remember { mutableStateOf(false) }
 
+    // Observe motion detection state
     val isMotionDetectionEnabled by notificationViewModel.isMotionDetectionEnabled.collectAsState()
-
 
     Scaffold(
         modifier = modifier,
@@ -88,6 +87,7 @@ fun CameraPage(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // Show permission request button if permissions are not granted
             if (!cameraPermissionsState.allPermissionsGranted) {
                 Column {
                     Button(
@@ -99,6 +99,7 @@ fun CameraPage(
                 }
             }
 
+            // Show countdown if permissions are granted but countdown is not finished
             if (!isCountdownFinished && cameraPermissionsState.allPermissionsGranted) {
                 AnimatedCounter(
                     startValue = 10, // In seconds
@@ -109,6 +110,7 @@ fun CameraPage(
                 )
             }
 
+            // Show camera preview if permissions are granted and countdown is finished
             if (cameraPermissionsState.allPermissionsGranted && isCountdownFinished) {
                 Box(modifier = Modifier.fillMaxSize()) {
                     var isHumanDetected by remember { mutableStateOf("") }
@@ -116,6 +118,7 @@ fun CameraPage(
                     val lifecycleOwner = LocalLifecycleOwner.current
                     val previewView = remember { PreviewView(context) }
 
+                    // Start the camera when the composable is launched
                     LaunchedEffect(Unit) {
                         cameraViewModel.startCamera(
                             context = context,
@@ -125,15 +128,16 @@ fun CameraPage(
                                 isHumanDetected = detected
                             },
                             motionDetectionEnabled = isMotionDetectionEnabled
-
                         )
                     }
 
+                    // Display the camera preview
                     AndroidView(
                         factory = { previewView },
                         modifier = Modifier.fillMaxSize()
                     )
 
+                    // Display detected human pose information
                     Box(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.TopCenter
@@ -158,7 +162,7 @@ fun CameraPage(
     }
 }
 
-
+// Composable for animated countdown
 @Composable
 fun AnimatedCounter(
     startValue: Int,
@@ -169,6 +173,7 @@ fun AnimatedCounter(
     var currentCount by remember { mutableIntStateOf(startValue) }
     var oldCount by remember { mutableIntStateOf(startValue) }
 
+    // Countdown logic
     LaunchedEffect(key1 = currentCount) {
         if (currentCount > 0) {
             delay(1000)
@@ -183,6 +188,7 @@ fun AnimatedCounter(
         val countString = currentCount.toString()
         val oldCountString = oldCount.toString()
 
+        // Animate each digit in the countdown
         for (i in countString.indices) {
             val oldChar = oldCountString.getOrNull(i)
             val newChar = countString[i]
@@ -191,6 +197,7 @@ fun AnimatedCounter(
             } else {
                 countString[i]
             }
+            // Animate the transition between digits
             AnimatedContent(
                 targetState = char,
                 transitionSpec = {

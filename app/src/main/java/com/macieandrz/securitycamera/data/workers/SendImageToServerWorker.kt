@@ -4,14 +4,9 @@ import android.content.Context
 import android.net.Uri
 import android.os.Environment
 import android.util.Log
-import android.widget.Toast
-import androidx.work.CoroutineWorker
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import com.google.firebase.firestore.FirebaseFirestore
-import com.macieandrz.securitycamera.data.models.User
 import com.macieandrz.securitycamera.repository.FirebaseRepository
-import kotlinx.coroutines.tasks.await
 
 class SendImageToServerWorker(context: Context, params: WorkerParameters) : Worker(context, params) {
     private val inputDirectory = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES) ?: context.filesDir
@@ -19,13 +14,13 @@ class SendImageToServerWorker(context: Context, params: WorkerParameters) : Work
 
     override fun doWork(): Result {
         val files = inputDirectory.listFiles()
-        val userId = repository.getCurrentUserId() ?: return Result.failure()
 
         var success = true
 
         files?.forEach { file ->
             if (file.name.startsWith("photo_") && file.name.endsWith(".jpg")) {
                 val storageRef = repository.getStorage().reference
+                // Get link to image
                 val imageRef = storageRef.child("images/${file.name}")
                 val uploadTask = imageRef.putFile(Uri.fromFile(file))
 
