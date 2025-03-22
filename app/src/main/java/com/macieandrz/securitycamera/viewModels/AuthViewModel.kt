@@ -2,7 +2,6 @@ package com.macieandrz.securitycamera.viewModels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -116,7 +115,6 @@ class AuthViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             auth.signOut()
             _authState.value = AuthState.UnAuthenticated
-
         }
     }
 

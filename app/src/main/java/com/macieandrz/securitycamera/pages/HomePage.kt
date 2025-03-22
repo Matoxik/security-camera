@@ -71,7 +71,9 @@ fun HomePage(
 
 
     Scaffold { innerPadding ->
-        ConstraintLayout(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
+        ConstraintLayout(modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding)) {
             val (appLogo, form) = createRefs()
 
             LaunchedEffect(authState.value) {
@@ -140,7 +142,7 @@ fun HomePage(
                                 Icon(
                                     imageVector = Icons.Filled.Camera,
                                     contentDescription = "Camera Icon",
-                                   tint = cameraTint
+                                    tint = cameraTint
                                 )
                             }
                             Spacer(modifier = Modifier.width(16.dp))
@@ -266,7 +268,10 @@ fun HomePage(
                     // Logout button
                     Button(
                         modifier = Modifier.fillMaxWidth(),
-                        onClick = { authViewModel.signout() },
+                        onClick = {
+                            authViewModel.signout()
+                            navController.popBackStack(LoginRoute, true)
+                        },
                         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary),
                         contentPadding = androidx.compose.foundation.layout.PaddingValues(8.dp)
                     ) {
