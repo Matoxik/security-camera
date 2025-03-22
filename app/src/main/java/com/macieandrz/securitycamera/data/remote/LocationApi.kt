@@ -14,13 +14,13 @@ import retrofit2.http.Query
 interface LocationApi {
 
     //https://maps.googleapis.com/maps/api/geocode/json?
-    //address=London,UK&key=AIzaSyCr_eltKVyLAw8y3vyr8mvx8DxyTeI0xjs
+    //address=London,UK&key=
 
     // Request to api using retrofit
     @GET("json")
     suspend fun getLocation(
         @Query("address") address: String,
-        @Query("key") key: String = "AIzaSyCr_eltKVyLAw8y3vyr8mvx8DxyTeI0xjs"
+        @Query("key") key: String = "" // Use your key
     ) :Response<Location>
 
 
