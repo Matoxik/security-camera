@@ -1,6 +1,7 @@
 package com.macieandrz.securitycamera.pages
 
 import android.Manifest
+import android.os.Build
 import androidx.camera.view.PreviewView
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.slideInVertically
@@ -62,7 +63,12 @@ fun CameraPage(
 ) {
     // Request camera and storage permissions
     val cameraPermissionsState = rememberMultiplePermissionsState(
-        permissions = listOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        permissions =
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            listOf(Manifest.permission.CAMERA)
+        } else {
+        listOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        }
     )
 
     // State to track if the countdown is finished

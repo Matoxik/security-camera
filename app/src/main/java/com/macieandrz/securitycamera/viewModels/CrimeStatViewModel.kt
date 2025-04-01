@@ -2,11 +2,11 @@ package com.macieandrz.securitycamera.viewModels
 
 import android.app.Application
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.macieandrz.securitycamera.data.models.CrimeStatItem
 import com.macieandrz.securitycamera.data.models.Location
-import com.macieandrz.securitycamera.pages.CrimeStatRoute
 import com.macieandrz.securitycamera.repository.CrimeStatRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,10 +14,13 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+
 class CrimeStatViewModel(app: Application) : AndroidViewModel(app) {
+
 
     // Initialize the repository to access local and remote data
     private val repo = CrimeStatRepository(app.applicationContext)
+
 
     // MutableStateFlow to hold the location data, exposed as an immutable StateFlow
     private val _location = MutableStateFlow<Location?>(null)
@@ -49,6 +52,9 @@ class CrimeStatViewModel(app: Application) : AndroidViewModel(app) {
                     }
                 }
             } catch (e: Exception) {
+                Toast.makeText(getApplication<Application>(), "Try connect to internet",
+                    Toast.LENGTH_SHORT
+                ).show()
                 Log.e("DEBUG", "Geolocation API Request Failed", e)
             }
 

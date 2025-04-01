@@ -75,7 +75,7 @@ fun NotificationPage(
 
         // Checking permissions
             if (!notificationPermissionsState.allPermissionsGranted && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                Column {
+                Column(modifier = modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
                     Button(
                         onClick = { notificationPermissionsState.launchMultiplePermissionRequest() },
                         shape = CutCornerShape(8.dp)

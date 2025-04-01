@@ -68,7 +68,7 @@ class CameraViewModel(app: Application) : AndroidViewModel(app) {
 
     // Time tracking for saving images
     private var lastSaveTime: Long = 0
-    private val saveInterval: Long = 60 * 1000 // 1 min
+    private val saveInterval: Long = 30 * 1000 // 1 min
 
     private var motionDetectionService: MotionDetectionService? = null
 
